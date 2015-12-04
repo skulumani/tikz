@@ -1,0 +1,15 @@
+%\documentclass{article}
+\documentclass[border=5pt]{standalone}
+\usepackage{tikz}
+\tikzset{help lines/.style={very thin,color=blue!50}} % modify the help lines style
+
+\begin{document}
+
+\begin{tikzpicture}[scale=1]
+	\draw[help lines] (-10,-10) grid (10,10); %grid
+
+	
+	\draw [thick] plot [smooth cycle, tension=0.1, rotate=5] coordinates { (-6,-5) (6,-5) (6,5) (-6,5) };
+	\draw [very thick] plot [smooth, tension=2] coordinates { (2,2) (7,-1) (2,-8) (-8,-1) (2,-2) };
+\end{tikzpicture}
+\end{document}
