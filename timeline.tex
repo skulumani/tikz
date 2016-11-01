@@ -18,24 +18,35 @@ timespan={Month}
 
 % put here the phases
 \begin{phases}
-\initialphase{involvement degree=2.5cm,phase color=black} % proposal meeting
-\phase{between month=1 and 3 in 1.0,involvement degree=3cm} % AAS matrix fisher paper due
-% San antonio AAS conference
-\phase{between month=5 and 6 in 0.1,involvement degree=2.25cm} % AAS abstract due
-% \phase{between week=1 and 2 in 0.9,involvement degree=7cm} % Aug AAS paper/conference
- % Oct 1 graduation application
-% \phase{between week=3 and 4 in 0.7,phase color=blue!80!cyan} % Nov dissertation done
-% \phase{between month=12 and 14 0.1,involvment degree=} % Diss defense 22 Dec
-% Jan 17 Submit dissertation
-% Jan 31 17 - Graduation
-% Hooding May 2017
+    \initialphase{involvement degree=2.5cm,phase color=black} % proposal meeting
+    \phase{between month=1 and 3 in 1.0,involvement degree=3cm} % AAS matrix fisher paper due
+    \phase{between month=5 and 6 in 0.1,involvement degree=2.25cm} % AAS abstract due
+    \phase{between month=6 and 10 in 0.5,involvement degree=6cm} % Aug AAS paper/conference
+    \phase{between month=11 and 14 in 0.1,involvement degree=5cm} % Dissertation due by Nov 1
+    \phase{between month=13 and 14 in 0.6,involvement degree=2.25cm} % Dissertation review 22 Dec
 \end{phases}
 
-% put here the milestones
-\addmilestone{at=phase-0.90,direction=90:1cm,text={Dissertation Proposal},text options={above}}
-\addmilestone{at=phase-1.270,direction=270:1cm,text={2017 AAS Paper},text options={below}}
-\addmilestone{at=phase-2.45,direction=90:1cm,text={2017 AAS Abstract},text options={above}}
+\node [xshift=-0.6cm,yshift=2cm,anchor=east,
+         font=\Large\bfseries] at (phase-0.180)
+         {Tasks};
+  \node [xshift=-0.6cm,yshift=-2cm,anchor=east,
+         font=\Large\bfseries] at (phase-0.180)
+         {Milestone};
 
+% task list
+\addmilestone{at=phase-0.90,direction=90:1cm,text={Proposal},text options={above}}
+\addmilestone{at=phase-1.90,direction=90:1cm,text={Matrix Fisher},text options={above}}
+\addmilestone{at=phase-2.90,direction=90:1.5cm,text={Asteroid Abstract},text options={above}}
+\addmilestone{at=phase-3.90,direction=90:1cm,text={End-End trajectories},text options={above}}
+\addmilestone{at=phase-4.90,direction=90:1cm,text={Dissertation},text options={above}}
+\addmilestone{at=phase-5.90,direction=90:1cm,text={Review},text options={above}}
+% all the milestones
+\addmilestone{at=phase-1.270,direction=270:2.5cm,text={Paper due},text options={below}}
+\addmilestone{at=phase-1.315,direction=270:1.5cm,text={2017 AAS},text options={below}}
+\addmilestone{at=phase-3.315,direction=270:1cm,text={2017 SFM Conf.},text options={below}}
+\addmilestone{at=phase-2.315,direction=270:1cm,text={Abstract due},text options={below}}
+\addmilestone{at=phase-4.315,direction=270:2cm,text={Dissertation Draft},text options={below}}
+\addmilestone{at=phase-5.315,direction=270:1.5cm,text={Defense},text options={below}}
 % \addmilestone{at=phase-2.110,direction=120:1.5cm,text={Research},text options={above}}
 % \addmilestone{at=phase-2.250,direction=240:1.5cm,text={Need Agreement},text options={below}}
 \end{tikzpicture}
