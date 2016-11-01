@@ -1,16 +1,18 @@
 \documentclass[border=10pt]{standalone}
 
+
 \usepackage{tikz}
 \usetikzlibrary{timeline}
 
 \begin{document}
 
 \begin{tikzpicture}[timespan={}]
+timespan={Month}
 % timespan={Day} -> now we have days as reference
 % timespan={}    -> no label is displayed for the timespan
 % default timespan is 'Week'
 
-\timeline[custom interval=true]{January, March, May, July, September, November}
+\timeline[custom interval=true]{Nov, Dec, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec, Jan}
 % \timeline[custom interval=true]{3,...,9} -> i.e., from Day 3 to Day 9
 % \timeline{8} -> i.e., from Week 1 to Week 8
 
