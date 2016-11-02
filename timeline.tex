@@ -1,6 +1,6 @@
 \documentclass[border=10pt]{standalone}
 
-
+\usepackage[dvipsnames]{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{timeline}
 
@@ -18,12 +18,12 @@ timespan={Month}
 
 % put here the phases
 \begin{phases}
-    \initialphase{involvement degree=2.5cm,phase color=black} % proposal meeting
-    \phase{between month=1 and 3 in 1.0,involvement degree=3cm} % AAS matrix fisher paper due
-    \phase{between month=5 and 6 in 0.1,involvement degree=2.25cm} % AAS abstract due
-    \phase{between month=6 and 10 in 0.5,involvement degree=6cm} % Aug AAS paper/conference
-    \phase{between month=11 and 14 in 0.1,involvement degree=5cm} % Dissertation due by Nov 1
-    \phase{between month=13 and 14 in 0.6,involvement degree=2.25cm} % Dissertation review 22 Dec
+    \initialphase{involvement degree=2.5cm,phase color=red} % proposal meeting
+    \phase{between month=3 and 3 in 0.5,involvement degree=3cm, phase color=cyan} % AAS matrix fisher paper due
+    \phase{between month=5 and 6 in 0.1,involvement degree=2.25cm,phase color=red} % AAS abstract due
+    \phase{between month=6 and 10 in 0.5,involvement degree=6cm, phase color=red} % Aug AAS paper/conference
+    \phase{between month=11 and 14 in 0.1,involvement degree=5cm,phase color=red} % Dissertation due by Nov 1
+    \phase{between month=13 and 14 in 0.6,involvement degree=2.25cm,phase color=red} % Dissertation review 22 Dec
 \end{phases}
 
 \node [xshift=-0.6cm,yshift=2cm,anchor=east,
@@ -43,9 +43,9 @@ timespan={Month}
 % all the milestones
 \addmilestone{at=phase-1.270,direction=270:2.5cm,text={Paper due},text options={below}}
 \addmilestone{at=phase-1.315,direction=270:1.5cm,text={2017 AAS},text options={below}}
-\addmilestone{at=phase-3.315,direction=270:1cm,text={2017 SFM Conf.},text options={below}}
+\addmilestone{at=phase-3.315,direction=270:1cm,text={2017 SFM},text options={below}}
 \addmilestone{at=phase-2.315,direction=270:1cm,text={Abstract due},text options={below}}
-\addmilestone{at=phase-4.315,direction=270:2cm,text={Dissertation Draft},text options={below}}
+\addmilestone{at=phase-4.315,direction=270:2cm,text={Draft},text options={below}}
 \addmilestone{at=phase-5.315,direction=270:1.5cm,text={Defense},text options={below}}
 % \addmilestone{at=phase-2.110,direction=120:1.5cm,text={Research},text options={above}}
 % \addmilestone{at=phase-2.250,direction=240:1.5cm,text={Need Agreement},text options={below}}
