@@ -1,13 +1,19 @@
 \documentclass[border=5pt]{standalone}
 \usepackage{my_packages}
 \usepackage{tikz}
-\usetikzlibrary{decorations.markings,decorations.pathreplacing,calc}
+\usetikzlibrary{decorations.shapes,decorations.pathreplacing,calc}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{arrows.meta}
+\tikzset{>={Latex[width=3mm,length=3mm]}}
 
 \tikzset{help lines/.style={very thin,color=gray!50}} % modify the help lines style
 \tikzset{->-/.style={decoration={
   markings,
   mark=at position .5 with {\arrow{>}}},postaction={decorate}}}
-  
+\tikzset{decorate sep/.style 2 args=
+{decorate,decoration={shape backgrounds,shape=circle,shape size=#1,shape sep=#2}}}
+
+
 \begin{document}
 
 \begin{tikzpicture}[scale=1]
