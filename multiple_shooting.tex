@@ -53,7 +53,15 @@
     \draw [dashed,thick] (t3.center) -- (x3m.center);
     \draw [dashed,thick] (tn.center) -- (xnm.center);
 
+    % draw markers at each subsegment
 
+    % draw the subsegments
+    \draw [->] (x0.center) to [bend left=30] (x1minus.center);
+    \draw [->] (x1plus.center) to [bend left=30] (x2minus.center);
+    % dotted lines here
+    \draw[decorate sep={2mm}{10mm},fill] (x2plus.east) to [bend left=30] (x3minus.west);
+
+    \draw [->] (x3plus.center) to [bend left=30] (xnminus.center);
 \end{tikzpicture}
 
 \end{document}
