@@ -1,0 +1,36 @@
+\documentclass[border=5pt]{standalone}
+\usepackage{my_packages}
+\usepackage{tikz}
+\usetikzlibrary{decorations.shapes,decorations.pathreplacing,calc}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{arrows.meta}
+\tikzset{>={Latex[width=3mm,length=3mm]}}
+
+\tikzset{help lines/.style={very thin,color=gray!50}} % modify the help lines style
+\tikzset{->-/.style={decoration={
+  markings,
+  mark=at position .5 with {\arrow{>}}},postaction={decorate}}}
+
+\begin{document}
+
+\begin{tikzpicture}[scale=1]
+    % \draw[help lines] (0,0) grid (20,5) ; %grid
+
+    \node[label=west:\(\vecbf{x}\)] (x0m) at (0,5) {};
+    \node[] (xnm) at (20,5) {};
+
+    \node[label=below:\(t_0\)] (t0) at (0,0) {};
+    \node[label=below:\(t_f\)] (tf) at (20,0) {};
+
+    % nodes for each subsegment
+    \node[label=left:\(\vecbf{x}_0\)] (x0) at (0,1) {\pgfuseplotmark{*}};
+    \node[label=right:\(\vecbf{x}_n\)] (xnminus) at (20,3) {\pgfuseplotmark{*}};
+    % draw axes
+    \draw [<->,thick] (tf.center) -- (t0.center) -- (x0m.center);
+
+    % draw the subsegments
+    \draw [->] (x0.center) to [bend left=20] (xnminus.center);
+
+\end{tikzpicture}
+
+\end{document}
