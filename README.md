@@ -1,5 +1,7 @@
-timeline
+TikZ Images
 ========
+
+## timeline
 
 TikZ timeline library
 
