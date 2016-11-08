@@ -1,0 +1,138 @@
+% * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+% COPYRIGHT 2014 - Claudio Fiandrino
+% Released under the LaTeX Project Public License v1.3c or later
+% 
+% email: <claudio dot fiandrino at gmail dot com>
+%
+% Timeline TikZ library version 0.3a - 19/07/2014
+
+\usetikzlibrary{backgrounds,calc}
+
+\pgfkeys{/tikz/.cd,
+  timespan/.store in=\timespan,
+  timespan=Week,
+  timeline width/.store in=\timelinewidth,
+  timeline width=20,
+  timeline height/.store in=\timelineheight,
+  timeline height=1,
+  timeline offset/.store in=\timelineoffset,
+  timeline offset=0.15,
+  initial week/.store in=\initialweek,
+  initial week=1,
+  end week/.store in=\endweek,
+  end week=2,
+  time point/.store in=\timepoint,
+  time point=0.5,
+  between day/.style args={#1 and #2 in #3}{% auxiliary style for days
+    initial week=#1,
+    end week=#2,
+    time point=#3,
+  },
+  between week/.style args={#1 and #2 in #3}{% style for weeks
+    initial week=#1,
+    end week=#2,
+    time point=#3,
+  },
+  between month/.style args={#1 and #2 in #3}{% auxiliary style for months
+    initial week=#1,
+    end week=#2,
+    time point=#3,
+  },
+  between year/.style args={#1 and #2 in #3}{% auxiliary style for years
+    initial week=#1,
+    end week=#2,
+    time point=#3,
+  },
+  involvement degree/.store in=\involvdegree,
+  involvement degree=2cm,
+  phase color/.store in=\phasecol,
+  phase color=red!50!orange,
+  phase appearance/.style={
+    circle,
+    opacity=0.3,
+    minimum size=\involvdegree,
+    fill=\phasecol
+  },
+}
+% settings to customize aspect of timeline
+\newif\ifcustominterval
+\pgfkeys{/tikz/timeline/.cd,
+  custom interval/.is if=custominterval,
+  custom interval=false,
+}
+
+% settings to deploy milestones
+\pgfkeys{/tikz/milestone/.cd,
+  at/.store in=\msstartpoint,
+  at=phase-1.north,
+  circle radius/.store in=\milestonecircleradius,
+  circle radius=0.1cm,
+  direction/.store in=\msdirection,
+  direction=90:2cm,
+  text/.store in=\mstext,
+  text={},
+  text options/.code={\tikzset{#1}},
+}
+
+\newcommand{\reftimespan}{\MakeLowerCase{\timespan}}
+
+\newcommand{\timeline}[2][]{
+  \pgfkeys{/tikz/timeline/.cd,#1}
+  \draw[fill,opacity=0.8] (0,0) rectangle (\timelinewidth,\timelineheight);
+  \shade[top color=black, bottom color=white,middle color=black!20]
+    (0,0) rectangle (\timelinewidth,-\timelineoffset);
+  \shade[top color=white, bottom color=black,middle color=black!20]  
+    (0,\timelineheight) rectangle (\timelinewidth,\timelineheight+\timelineoffset);
+
+  \ifcustominterval%
+    \foreach \smitem [count=\xi] in {#2}  {\global\let\maxsmitem\xi}%
+  \else%
+    \foreach \smitem [count=\xi] in {1,...,#2}  {\global\let\maxsmitem\xi}%
+  \fi%
+  
+  \pgfmathsetmacro\position{\timelinewidth/(\maxsmitem+1)}
+  \node at (0,0.5\timelineheight)(\timespan-0){\phantom{Week 0}};
+ 
+  \ifcustominterval%
+    \foreach \x[count=\xi] in {#2}{%
+      \node[text=white,text depth=0pt]at +(\xi*\position,0.5\timelineheight) (\timespan-\xi) {\timespan\ \x};%
+    }%
+  \else%
+    \foreach \x[count=\xi] in {1,...,#2}{%
+      \node[text=white, text depth=0pt]at +(\xi*\position,0.5\timelineheight) (\timespan-\xi) {\timespan\ \x};%
+    }%
+  \fi%  
+}
+
+\newcounter{involv}
+\setcounter{involv}{0}
+
+\newcommand{\phase}[1]{
+\stepcounter{involv}
+\node[phase appearance,#1] 
+ (phase-\theinvolv)
+ at ($(\timespan-\initialweek)!\timepoint!(\timespan-\endweek)$){};
+}
+
+\newcommand{\initialphase}[1]{
+\node[phase appearance,#1,anchor=west,between week=0 and 1 in 0,] 
+ (phase-\theinvolv)
+ at ($(\timespan-0)!0!(\timespan-1)$){};
+\setcounter{involv}{0} 
+}
+
+\newenvironment{phases}{\begin{pgfonlayer}{background}}{\end{pgfonlayer}}
+
+\newcommand{\addmilestone}[1]{
+\pgfkeys{/tikz/milestone/.cd,#1}
+\draw[double,fill] (\msstartpoint) circle [radius=\milestonecircleradius];
+\draw(\msstartpoint)--++(\msdirection)node[/tikz/milestone/text options]{\mstext};
+}
+
+% HISTORY
+% 0.1 -> initial release
+% 0.2 -> customizable timespan label
+% 0.3 -> \timeline command with custom intervals
+%             styles ``between x''
+%             removed unnecessary call to xstring
+% 0.3a -> text depth for timeline labels
