@@ -1,35 +1,49 @@
 %\documentclass{article}
 \documentclass[border=5pt]{standalone}
+\usepackage{my_packages}
 \usepackage{tikz}
-\usetikzlibrary{decorations.markings}
+\usetikzlibrary{3d}
 
 \tikzset{help lines/.style={very thin,color=gray!50}} % modify the help lines style
-\tikzset{->-/.style={decoration={
-  markings,
-  mark=at position .5 with {\arrow{>}}},postaction={decorate}}}
+
+ \makeatletter
+ \tikzoption{canvas is xy plane at z}[]{%
+   \def\tikz@plane@origin{\pgfpointxyz{0}{0}{#1}}%
+   \def\tikz@plane@x{\pgfpointxyz{1}{0}{#1}}%
+   \def\tikz@plane@y{\pgfpointxyz{0}{1}{#1}}%
+   \tikz@canvas@is@plane
+ }
+ \makeatother  
+
   
 \begin{document}
 
-\begin{tikzpicture}[scale=1]
-	\coordinate [label=left:\textcolor{black}{\LARGE \(q_0\)}] (x0) at (0,0);
-	\coordinate [label=right:\textcolor{black}{\LARGE  \(q_k\)}] (xn) at (-1,-1);
-	\coordinate [label=left:\textcolor{black}{\LARGE  \(\Sigma\)}] (sigma) at (-4,3);
-	\coordinate [label=below:\textcolor{black}{\LARGE  \(P(q)\)}] (P) at (0,-3.5);
-	% define the path of the flow with coordinates
-	\coordinate [label=right:\textcolor{blue}{}] (f1) at (5,-2);
-	\coordinate [label=below:\textcolor{black}{\LARGE  \(\phi(t,q)\)}] (f2) at (2,-5);
-	\coordinate [label=right:\textcolor{blue}{}] (f3) at (-4,-4);
-	\coordinate [label=right:\textcolor{blue}{}] (f4) at (-4,-1);
-	
-%	\draw[help lines] (-10,-10) grid (10,10); %grid
-	\filldraw [black] (x0) circle [radius=3pt];
-	\filldraw [black] (xn) circle [radius=3pt];
+\begin{tikzpicture}[x={(-0.866cm,-0.5cm)}, y={(0.866cm,-0.5cm)}, z={(0cm,1cm)}, scale=1]
+	% draw 3d axis
 
-	\draw [ultra thick,black,->-](x0) to[out=20,in=90,distance=2cm] (f1) to[out=-90,in=0,distance=2cm] (f2) to[out=180,in=-45,distance=2cm] (f3) to[out=135,in=-135,distance=2cm] (f4) ;
-	\draw [ultra thick, black,dashed] (f4) to[out=45,in=120,distance=1cm] (xn);
-	
-	\draw [ultra thick] plot [smooth cycle, tension=0.1, rotate=5] coordinates { (-4,-3) (4,-3) (4,3) (-4,3) };
+	\draw[->,red] (0,0,0) --  (1,0,0);
+  	\draw[->,red] (0,0,0) --  (0,1,0);    
+  	\draw[->,red] (0,0,0) --  (0,0,1);
 
+    % draw circle in xy plane z=1.5
+    \begin{scope}[canvas is xy plane at z=0]
+        \node[label=below:\(\vecbf{x}_{0}\)] (x0) at (0,1) {\pgfuseplotmark{*}};
+        \node[label=above:\(\vecbf{x}_{f}\)] (x0) at (0,1.5) {\pgfuseplotmark{*}};
+        \node[] (xm) at (0,-1) {};
+        \draw [black] (0,0) circle (1);
+    \end{scope}
+
+  	% draw yz plane Poincare section
+  	\begin{scope}[canvas is yz plane at x=0]
+  		\node[label=above:\(\Sigma\)] (upper_right) at (1.5,0.5) {};
+        \node[] (upper_left) at (0.5,0.5) {};
+        \node[] (lower_left) at (0.5,-0.5) {};
+        \node[] (lower_right) at (1.5,-0.5) {};
+
+      	\draw[black, thick] (lower_left.center) -- (lower_right.center)--(upper_right.center) --(upper_left.center)-- (lower_left.center);
+  	\end{scope}  
 
 \end{tikzpicture}
+
+
 \end{document}
