@@ -2,46 +2,48 @@
 \documentclass[border=5pt]{standalone}
 \usepackage{my_packages}
 \usepackage{tikz}
-\usetikzlibrary{3d}
+\usepackage{tikz-3dplot}
 
 \tikzset{help lines/.style={very thin,color=gray!50}} % modify the help lines style
 
- \makeatletter
- \tikzoption{canvas is xy plane at z}[]{%
-   \def\tikz@plane@origin{\pgfpointxyz{0}{0}{#1}}%
-   \def\tikz@plane@x{\pgfpointxyz{1}{0}{#1}}%
-   \def\tikz@plane@y{\pgfpointxyz{0}{1}{#1}}%
-   \tikz@canvas@is@plane
- }
- \makeatother  
-
-  
 \begin{document}
+\tdplotsetmaincoords{60}{125} % view angle in spherical coordinates
+% \tdplotsetrotatedcoords{0}{20}{0}
+\begin{tikzpicture}[tdplot_main_coords,
+      poincare/.style={opacity=.2,very thick,fill=blue},
+      orbit/.style={very thick,black},
+      orbit hidden/.style={very thick,dashed},
+      grid/.style={very thin,gray!50},
+      axis/.style={->,blue,thick}]
 
-\begin{tikzpicture}[x={(-0.866cm,-0.5cm)}, y={(0.866cm,-0.5cm)}, z={(0cm,1cm)}, scale=1]
-	% draw 3d axis
+    % draw axes
+	\draw[axis] (0,0,0) -- (5,0,0) node[anchor=west]{$x$};
+    \draw[axis] (0,0,0) -- (0,5,0) node[anchor=west]{$y$};
+    \draw[axis] (0,0,0) -- (0,0,5) node[anchor=west]{$z$};
 
-	\draw[->,red] (0,0,0) --  (1,0,0);
-  	\draw[->,red] (0,0,0) --  (0,1,0);    
-  	\draw[->,red] (0,0,0) --  (0,0,1);
+    % nodes for the poincare section
+    \node[label=above:\(\Sigma\)] (upper_right) at (0,5,5) {};
+    \node[] (upper_left) at (0,1,5) {};
+    \node[] (lower_left) at (0,1,0) {};
+    \node[] (lower_right) at (0,5,0) {};
 
-    % draw circle in xy plane z=1.5
-    \begin{scope}[canvas is xy plane at z=0]
-        \node[label=below:\(\vecbf{x}_{0}\)] (x0) at (0,1) {\pgfuseplotmark{*}};
-        \node[label=above:\(\vecbf{x}_{f}\)] (x0) at (0,1.5) {\pgfuseplotmark{*}};
-        \node[] (xm) at (0,-1) {};
-        \draw [black] (0,0) circle (1);
-    \end{scope}
+    % draw poincare section
+    \draw[poincare] (upper_right.center) -- (upper_left.center) -- (lower_left.center) -- (lower_right.center) -- (upper_right.center);
+    
 
-  	% draw yz plane Poincare section
-  	\begin{scope}[canvas is yz plane at x=0]
-  		\node[label=above:\(\Sigma\)] (upper_right) at (1.5,0.5) {};
-        \node[] (upper_left) at (0.5,0.5) {};
-        \node[] (lower_left) at (0.5,-0.5) {};
-        \node[] (lower_right) at (1.5,-0.5) {};
+    % draw a periodic orbit
+    \coordinate (center) at (0,0,2);
+    \node[below right] (x0) at (0,2,2) {\(\vecbf{x}_0\)};
+    \filldraw (0,2,2) circle (3pt);
 
-      	\draw[black, thick] (lower_left.center) -- (lower_right.center)--(upper_right.center) --(upper_left.center)-- (lower_left.center);
-  	\end{scope}  
+    \node[below right] (x1) at (0,3,2) {\(\vecbf{x}_1\)};
+    \filldraw (0,3,2) circle (3pt);
+
+    \tdplotdrawarc[orbit hidden]{(center)}{2}{90}{190}{}{};
+    \tdplotdrawarc[orbit,<-]{(center)}{2}{-170}{90}{}{};
+
+    \tdplotdrawarc[orbit hidden]{(center)}{3}{90}{199}{}{};
+    \tdplotdrawarc[orbit,<-]{(center)}{3}{-161}{90}{}{};
 
 \end{tikzpicture}
 
