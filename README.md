@@ -14,3 +14,6 @@ http://tex.stackexchange.com/a/159856/13304
 
 http://tex.stackexchange.com/questions/183046/how-do-i-develop-a-complex-time-line
 
+This is also on Google Drive and Bitbucket
+
+
