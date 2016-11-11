@@ -22,15 +22,22 @@
     \node[label=below:\(t_0\)] (t0) at (0,0) {};
     \node[label=below:\(t_f\)] (tf) at (20,0) {};
 
-    % nodes for each subsegment
-    \node[label=left:\(\vecbf{x}_0\)] (x0) at (0,1) {\pgfuseplotmark{*}};
-    \node[label=right:\(\vecbf{x}_n\)] (xnminus) at (20,3) {\pgfuseplotmark{*}};
-    % draw axes
     \draw [<->,thick] (tf.center) -- (t0.center) -- (x0m.center);
 
-    % draw the subsegments
-    \draw [->] (x0.center) to [bend left=20] (xnminus.center);
+    % nodes for each subsegment
+    \node[label=left:\(\vecbf{x}_0\)] (x0) at (0,1) {\pgfuseplotmark{*}};
 
+    \node[label=below left:\(\vecbf{\lambda}_0\)] at (x0) {};
+    \node[label=right:\(\vecbf{x}_f\)] (xnminus) at (20,3) {\pgfuseplotmark{*}};
+    \node[label=below right:\(\vecbf{\lambda}_f\)] at (xnminus) {};
+
+    % shooting attempts
+    \draw [->,dashed] (x0.center) to [bend left=20] ($ (xnminus.center)+(0,1) $);
+    \draw [->,dashed] (x0.center) to [bend right=10] ($ (xnminus.center)+(0,-1) $);
+    % final correct shooting path
+    
+    \draw [->] (x0.center) to [bend left=10] (xnminus.center);
+    
 \end{tikzpicture}
 
 \end{document}
