@@ -1,0 +1,50 @@
+\documentclass{article}
+\usepackage{my_packages}
+\geometry{margin=0.75in}
+\usepackage{tikz_packages}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.14}
+\usepackage{fancyhdr}
+\chead{TOP}
+\begin{document}
+\thispagestyle{fancy}
+\begin{figure*}[htbp] 
+    \centering 
+    \begin{subfigure}[htbp]{\textwidth} 
+    \begin{tikzpicture}[]
+        \begin{semilogxaxis}[
+            xmin=1e0, xmax=1e4,
+            ymin=0, ymax=10,
+            grid=both,
+            grid style={line width=0.1pt, draw=gray!50},
+            major grid style={line width=0.2pt, draw=gray!90},
+            yticklabels={,,},
+            xticklabels={,,},
+            minor tick num=4,
+            width=\textwidth,
+            height=0.5\textheight
+        ]
+        \end{semilogxaxis}
+    \end{tikzpicture}
+    \vspace*{2cm}
+    \end{subfigure}
+
+    \begin{subfigure}[htbp]{\textwidth} 
+    \begin{tikzpicture}[]
+        \begin{semilogxaxis}[
+            xmin=1e0, xmax=1e4,
+            ymin=0, ymax=10,
+            grid=both,
+            grid style={line width=0.1pt, draw=gray!50},
+            major grid style={line width=0.2pt, draw=gray!90},
+            yticklabels={,,},
+            xticklabels={,,},
+            minor tick num=4,
+            width=\textwidth,
+            height=0.5\textheight
+        ]
+        \end{semilogxaxis}
+    \end{tikzpicture}
+    \end{subfigure}
+\end{figure*}
+\end{document}
