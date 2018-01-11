@@ -29,6 +29,6 @@ deploy:
     secure: eIV+4hRNiq7s6CXFuBJDimLBuQwQSLbzQHiXniTMhA8bJ3DwfHgb+LM1YqySmtlePLaLSSUjhE9fBT4UuOzubDPSIS8Egs47R6HRKTdw558D3V7xbqtC+PMRvlI8zGw96yNfLr9641qNN/EBaVGZjjFVKjh5JyTYxTkUHbFV5bOBUTwULmqCM0t0eCshg0nZQIe+mxLuUpS6oLhlfldzc95CtZfAXiWtIf6mDmrB+G+rBhSvrPs+NyIxLBLZ0aAPgR1BfFwUq6wfBOsfyIWEiQB9yWTvCB/FpLsgPx9K1gZXcjUS/geJLsYZcYP9fGiTFLsIGHBGB9QTUcWJYuDD/IL5BSMvyzMLZZ0CfwDizWnJgbgIZ6ayyT5wp+Z7md7QDbmHRAnqhoAmbsWvUmcpYi6lz0yVKmNcg/5HUDIFvhO/z7P83BV7uohaBgfxPoP+Jv+y+kQFSyBuWGHDwmcnMSfVaop95CV4wYSLODs+ghrtJ0Xvbm4rjvwObhtTvilsAnDOiCkRLtdrxkyY0awhvFgxS3z8riwEBGu6384tOlTZuioJZ3RFwAjtTgNZrZPY3Rx56MlVU9P9ZZ0py6dDmLaKGialdBAyC/9xUjS4WDHguV86Dvul5LtmevP6SKyPqIHXoHLY2B/eNkPzJ7CcGBGaW33UY7O/LvbTXLAkN1Q=
   skip_cleanup: true
   file_glob: true
-  file: *.pdf
+  file: ./*.pdf
   on:
     repo: skulumani/tikz
