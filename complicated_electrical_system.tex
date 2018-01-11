@@ -1,0 +1,73 @@
+\documentclass[border=5mm]{standalone}
+\usepackage{my_packages}
+\usepackage{tikz_packages}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.14}
+\usepackage[explicit]{titlesec}
+
+\begin{document}
+
+% Copied from https://tex.stackexchange.com/questions/370151/drawing-electrical-diagram-using-circuitikz/370178
+\begin{scaletikzpicturetowidth}{0.5\textwidth}
+%\begin{circuitikz}[x=3cm,y=3cm]
+\begin{tikzpicture}[x=3cm,y=3cm]
+    % Define all coordinates. Not strictly necessary, but it
+    % makes for cleaner code, in my humble opinion.
+    \coordinate[label=below:$+$]   (INP) at (0,0);
+    \coordinate[label=$A_1$]       (A1)  at (1,0);
+    \coordinate[label=$B_1$]       (B1)  at (2,0);
+    \coordinate                    (C1)  at (1,-1);
+    \coordinate                    (CE1) at (2,-1);
+    \coordinate[label=above:$-$]   (INN) at (0,-1);
+    \coordinate[label=$D_1$]       (D1)  at (3,0);
+    \coordinate                    (L1)  at (3,-1);
+
+    % Draw part of the circuit. You might need more than one
+    % draw command, depending on how you do things.
+    \draw 
+        (INP) to[short,o-*,i_=$i_{ul}$]                (A1)
+              to[R,l_=$R_1$,-*,i^>=$i_2$]              (B1)
+              to[C,l_=$C_{E1}$,-*,i^>=$i_{e1}$]        (CE1)
+              --                                       (C1)
+              to[C,l_=$C_1$,*-*,i<^=$i_1$]             (A1)
+        (INN) to[short,o-]                             (C1)
+        (B1)  to[I,i_<=$gi_1$,color=orange]            (D1)
+              to[L,l_=$L_1$,color=magenta,i=$i_4$,*-*] (L1)
+              --                                       (CE1)
+    ;
+
+    % Some additional labelling...
+    \node at (0,-0.5) {$u_{ul}$};
+
+    % Helper lines
+    % Remove the 'dashed' parameter for a normal line.
+    % This part uses the 'calc' library from TikZ for
+    % coordinate calculations.
+    % NOTE: The corner radius has to be adjusted manually
+    %       if you adjust the base x and y lengths in the
+    %       optional argument for the tikzpicture/circuitikz
+    %       environment.
+    \draw[red,dashed,rounded corners=0.2cm,-latex]
+           ($(INP) + ( 0.175,-0.5  )$) 
+        -- ($(INP) + ( 0.175,-0.175)$) 
+        -- ($(B1)  - ( 0.175, 0.175)$)
+        -- ($(CE1) + (-0.175, 0.175)$) 
+        -- ($(INN) + ( 0.175, 0.175)$)
+    ;
+\end{tikzpicture}
+%\end{circuitikz}
+\end{scaletikzpicturetowidth}
+% Since circuitikz's syntax is admittedly a bit terse and can look rather cryptic to the uninitiated, a few remarks on that:
+
+% to[short,o-*,i_=$i_{ul}$]
+
+% short will just draw a line (or, as the name implies, a short-circuit). o-* means to draw a non-filled circle on the starting point (in this case, on the left side of the element), and a filled circle on the terminating side. Note that if you draw from left to right, this would obviously be flipped. i_=text places an arrowhead for a current in the middle of the line, labelled with text, below the arrow due to the underscore. By default, the label would go above the arrow (i=text), and you can also place something above the arrow explicitly via i^=text.
+
+% to[C,l_=$C_{E1}$,-*,i^>=$i_{e1}$]
+
+% draws a capacitor, labelled with $C_{E1}$. By default, the label would go on the right side of the capacitor (or, for TikZ, "above") because we're drawing from top to bottom in this case. We place it on the left side by placing an underscore before the =, as above. Also note that for the left capacitor, we also place the label "below" the element, but because we're drawing from bottom to top in that case, the label ends up on the right side.
+
+% Same as with the short, we add a current via i^>=$i_{e1}$. The ^ places the label on the right side (as said above, it's not strictly needed though), the > indicates the direction of the arrow, and the order ^> means that the current arrow should be drawn after the capacitor (whereas >^ would place the arrow above the capacitor CE1 in this case). See also this answer.
+
+% And if you're wondering what that whole to[] thing is about: That's a TikZ operator. It's basically a fancy version of the -- path operator (which just draws a line), allowing for more customization. See Section 14.13 in the PGF manual, on page 157 in its current version.<Paste>
+\end{document}
