@@ -12,16 +12,7 @@ before_install:
 - bash ./utilities/travis_setup.sh
 - export PATH="/tmp/texlive/bin/x86_64-linux:$PATH"
 script:
-- latexmk -pdf -interaction=nonstopmode -halt-on-error polyhedron_faces.tex
-- latexmk -pdf -interaction=nonstopmode -halt-on-error multiple_shooting.tex
-- latexmk -pdf -interaction=nonstopmode -halt-on-error timeline.tex
-- latexmk -pdf -interaction=nonstopmode -halt-on-error mechanical_system.tex
-- latexmk -pdf -interaction=nonstopmode -halt-on-error single_shooting.tex
-- latexmk -pdf -interaction=nonstopmode -halt-on-error electrical_system.tex
-- latexmk -pdf -interaction=nonstopmode -halt-on-error poincare_reachability.tex
-- latexmk -pdf -interaction=nonstopmode -halt-on-error multiple_shooting.tex
-- latexmk -pdf -interaction=nonstopmode -halt-on-error invariant_manifold.tex
-- latexmk -pdf -interaction=nonstopmode -halt-on-error poincare_map.tex
+- latexmk -pdf -interaction=nonstopmode -halt-on-error 
 after_success:
 deploy:
   provider: releases
