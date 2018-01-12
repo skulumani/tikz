@@ -1,10 +1,8 @@
-\documentclass{standalone}
- \usepackage{tikz}
- \usetikzlibrary{calc,patterns,
-                 decorations.pathmorphing,
-                 decorations.markings}
-
+\documentclass[varwidth]{standalone}
+\usepackage{my_packages}
+\usepackage{tikz_packages}
  \begin{document}
+
  \begin{tikzpicture}
 
  \tikzstyle{spring}=[thick,decorate,decoration={zigzag,pre length=0.3cm,post length=0.3cm,segment length=6}]
@@ -38,7 +36,8 @@
                             ($(M1.north west) + (1,0.75)$);
  \draw[ultra thick, -latex] ($(M1.west) - (1,0)$) -- ($(M1.west)$); 
 
- \end{tikzpicture} \\
+ \end{tikzpicture} 
+
 \begin{tikzpicture}[every node/.style={draw,outer sep=0pt,thick}]
 \tikzstyle{spring}=[thick,decorate,decoration={zigzag,pre length=0.3cm,post length=0.3cm,segment length=6}]
 \tikzstyle{damper}=[thick,decoration={markings,  
@@ -84,5 +83,32 @@
 
 \draw [-latex,ultra thick] (M.east) ++ (0.2cm,0) -- +(1cm,0);
 \end{scope}
+
 \end{tikzpicture}
+
+
+\begin{tikzpicture}
+
+    % locations of everything
+    \coordinate[](origin) at (0, 0);
+    \coordinate[] (hs) at (3, 0);
+
+    \node[block, minimum width=4em, minimum height=4em] (M1) at (origin) [] {$m_1$};
+    \draw[damper] (M1.east) -- ($(M1) + (hs)$);
+    \draw[spring] ($(M1) + (hs)$) -- ($(M1) + (hs) + (hs) $);
+
+    \node[ground, rotate=-90,anchor=south, minimum width=4em] (ground) at ($(M1) + (hs) + (hs) $) {};
+    \draw (ground.south west) -- (ground.south east);
+
+    % \draw[thick, dashed] ($(M1.north west)$) -- ($(M1.north west) + (0,1)$);
+    % \draw[thick, dashed] ($(M2.north west)$) -- ($(M2.north west) + (0,1)$);
+    % \draw[ultra thick, -latex] ($(M2.north west) + (0,0.75)$) -- 
+    %     ($(M2.north west) + (1,0.75)$)
+    %     node [midway, below] {$F_x$};
+    % \draw[ultra thick, -latex] ($(M1.north west) + (0,0.75)$) -- 
+    %     ($(M1.north west) + (1,0.75)$);
+    % \draw[ultra thick, -latex] ($(M1.west) - (1,0)$) -- ($(M1.west)$); 
+
+\end{tikzpicture} 
+
  \end{document}
