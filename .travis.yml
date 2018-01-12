@@ -23,7 +23,6 @@ script:
 - latexmk -pdf -interaction=nonstopmode -halt-on-error invariant_manifold.tex
 - latexmk -pdf -interaction=nonstopmode -halt-on-error poincare_map.tex
 after_success:
-- bash ./utilities/deploy.sh
 deploy:
   provider: releases
   api_key:
@@ -33,3 +32,4 @@ deploy:
   file: ./*.pdf
   on:
     repo: skulumani/tikz
+    tags: true
