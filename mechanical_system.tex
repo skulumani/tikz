@@ -111,4 +111,29 @@
 
 \end{tikzpicture} 
 
+\begin{tikzpicture}[every node/.style={outer sep=0pt,thick}]
+
+\node (M) [draw,minimum width=1cm, minimum height=1cm] {$m$};
+
+\node (ground) [ground,anchor=north,yshift=-0.25cm,minimum width=1.5cm] at (M.south) {};
+\draw (ground.north east) -- (ground.north west);
+\draw [thick] (M.south west) ++ (0.2cm,-0.125cm) circle (0.125cm)  (M.south east) ++ (-0.2cm,-0.125cm) circle (0.125cm);
+
+\node[ground, rotate=-90, minimum width=2cm] (wall) at (-2, 0) {};
+\draw (wall.north east) -- (wall.north west);
+
+\node[ground, rotate=90, minimum width=2cm] (rwall) at (2, 0) {};
+\draw (rwall.north east) -- (rwall.north west);
+
+\draw [spring] (wall.145) -- ($(M.north west)!(wall.145)!(M.south west)$);
+\draw [damper] (wall.30) -- ($(M.north west)!(wall.30)!(M.south west)$);
+
+\draw [spring] (rwall.30) -- ($(M.north east)!(rwall.30)!(M.south east)$);
+\draw [damper] (rwall.145) -- ($(M.north east)!(rwall.145)!(M.south east)$);
+% \draw [-latex,ultra thick] (M.east) ++ (0.2cm,0) -- +(1cm,0);
+
+ \draw[thick, dashed] ($(M.north west)$) -- ($(M.north west) + (0,1)$);
+ \draw[ultra thick, -latex] ($(M.north west) + (0,0.75)$) -- 
+     ($(M.north west) + (1,0.75)$) node[above] {$x$};
+\end{tikzpicture}
  \end{document}
