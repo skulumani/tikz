@@ -1,0 +1,42 @@
+\documentclass[varwidth]{standalone}
+\usepackage{my_packages}
+\usepackage{tikz_packages}
+ \begin{document}
+
+\begin{tikzpicture}
+    \pgfmathsetmacro{\Depth}{2}
+    \pgfmathsetmacro{\Width}{2}
+    \pgfmathsetmacro{\Height}{2}
+
+    \coordinate (O) at (0,0,0);
+    \coordinate (A) at (0,\Width,0);
+    \coordinate (B) at (0,\Width,\Height);
+    \coordinate (C) at (0,0,\Height);
+    \coordinate (D) at (\Depth,0,0);
+    \coordinate (E) at (\Depth,\Width,0);
+    \coordinate (F) at (\Depth,\Width,\Height);
+    \coordinate (G) at (\Depth,0,\Height);
+    \coordinate (COM) at ($0.5*(O)+0.5*(D) + 0.5*(A) + 0.5*(O) +0.5*(C) + 0.5*(O) $);
+    \coordinate (H) at ($(COM) + 4*(0.1, 0, \Height)$);
+
+    \draw[] (O) -- (C) -- (G) -- (D) -- cycle;% Bottom Face
+    \draw[] (O) -- (A) -- (E) -- (D) -- cycle;% Back Face
+    \draw[] (O) -- (A) -- (B) -- (C) -- cycle;% Left Face
+    \draw[] (D) -- (E) -- (F) -- (G) -- cycle;% Right Face
+    \draw[] (C) -- (B) -- (F) -- (G) -- cycle;% Front Face
+    \draw[] (A) -- (B) -- (F) -- (E) -- cycle;% Top Face
+    
+    \node at (COM) {\textbullet};
+    
+    \draw[thick,->] (COM) -- (H) node [below] {Pitch Axis};
+    \draw[thick,->] ($0.5*(G) + 0.5*(D) + (1, 0, 0)$) node [right] {$f(t)$} -- ($0.5*(G) + 0.5*(D) $);
+
+    \draw[thick,->] ($0.5*(F) + 0.5*(E) + (1, 0, 0)$) node [right] {$f(t)$} -- ($0.5*(F) + 0.5*(E) $);
+    %% Following is for debugging purposes so you can see where the points are
+    %% These are last so that they show up on top
+    \foreach \xy in {O, A, B, C, D, E, F, G}{
+        \node at (\xy) {\xy};
+    }
+\end{tikzpicture}
+
+ \end{document}
