@@ -42,4 +42,24 @@
     % }
 \end{tikzpicture}
 
+\begin{tikzpicture}
+    \pgfmathsetmacro{\dist}{1}
+
+    \coordinate[](origin) at (0, 0);
+    \coordinate[] (d) at (0, \dist);
+    \coordinate[] (w) at (0, 1.5*\dist);
+
+    \node[ground, anchor=north, minimum width=4em] (ground) at (origin) {};
+    \draw (ground.north west) -- (ground.north east);
+    
+    \draw[rot_damper] (origin.north) -- (w.south);
+
+    \draw[thick] ($(w)+(-1,0.25)$) arc (-180:0:1 and 0.25);% right
+    \draw[thick] ($(w)+(-1,0.5)$) arc (-180:180:1 and 0.25);% 
+
+    \draw[thick, ->,>=stealth'] ($(w)+(-1,1.25)$) arc (-180:0:1 and 0.25) node [right] {$T(t)$};% 
+
+    \draw[thick] ($(w) + (-1,0.25)$) -- ($(w) + (-1,0.5)$);
+    \draw[thick] ($(w) + (1,0.25)$) -- ($(w) + (1,0.5)$);
+\end{tikzpicture}
  \end{document}
