@@ -9,7 +9,7 @@
 
 \begin{scaletikzpicturetowidth}{0.5\textwidth}
     \begin{tikzpicture}[scale=\tikzscale]
-        \draw (0,0) to[american voltage source,v<=\( u(t)\)] (0,2) 
+        \draw (0,0) to[american voltage source,v=\( u(t)\)] (0,2) 
         to[inductor, l^=1<\henry>] (2,2) to[resistor, l=3<\ohm>] (2,0) 
         to[capacitor, l^=0.5<\farad>] (0,0); 
     \end{tikzpicture}
