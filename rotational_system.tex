@@ -3,63 +3,70 @@
 \usepackage{tikz_packages}
  \begin{document}
 
-\begin{tikzpicture}
-    \pgfmathsetmacro{\Depth}{5}
-    \pgfmathsetmacro{\Width}{5}
-    \pgfmathsetmacro{\Height}{5}
+ \begin{tikzpicture}[]
+     \pgfmathsetmacro{\Depth}{5}
+     \pgfmathsetmacro{\Width}{5}
+     \pgfmathsetmacro{\Height}{5}
 
-    \coordinate (O) at (0,0,0);
-    \coordinate (A) at (0,\Width,0);
-    \coordinate (B) at (0,\Width,\Height);
-    \coordinate (C) at (0,0,\Height);
-    \coordinate (D) at (\Depth,0,0);
-    \coordinate (E) at (\Depth,\Width,0);
-    \coordinate (F) at (\Depth,\Width,\Height);
-    \coordinate (G) at (\Depth,0,\Height);
-    \coordinate (COM) at ($0.5*(O)+0.5*(D) + 0.5*(A) + 0.5*(O) +0.5*(C) + 0.5*(O) $);
-    \coordinate (H) at ($(COM) + 3*(0.1, 0, \Height)$);
+     \coordinate (O) at (0,0,0);
+     \coordinate (A) at (0,\Width,0);
+     \coordinate (B) at (0,\Width,\Height);
+     \coordinate (C) at (0,0,\Height);
+     \coordinate (D) at (\Depth,0,0);
+     \coordinate (E) at (\Depth,\Width,0);
+     \coordinate (F) at (\Depth,\Width,\Height);
+     \coordinate (G) at (\Depth,0,\Height);
+     \coordinate (COM) at ($0.5*(O)+0.5*(D) + 0.5*(A) + 0.5*(O) +0.5*(C) + 0.5*(O) $);
+     \coordinate (H) at ($(COM) + 3*(0.1, -0.4, 3)$);
 
-    \draw[] (O) -- (C) -- (G) -- (D) -- cycle;% Bottom Face
-    \draw[] (O) -- (A) -- (E) -- (D) -- cycle;% Back Face
-    \draw[] (O) -- (A) -- (B) -- (C) -- cycle;% Left Face
-    \draw[] (D) -- (E) -- (F) -- (G) -- cycle;% Right Face
-    \draw[] (C) -- (B) -- (F) -- (G) -- cycle;% Front Face
-    \draw[] (A) -- (B) -- (F) -- (E) -- cycle;% Top Face
-    
-    \node at (COM) {\textbullet};
-    \node [ above] at (COM) {Center of Mass};
+     \coordinate (TC) at ($0.5*(G) + 0.5*(D) $);
+     \coordinate (TB) at ($0.5*(F) + 0.5*(E)$);
+     \coordinate (TA) at ($0.5*(A) + 0.5*(B) $);
+     \coordinate (TD) at ($0.5*(C) + 0.5*(O) $);
 
-    \draw[thick,->] (COM) -- (H) node [below] {Pitch Axis};
-    \draw[thick,->] ($0.5*(G) + 0.5*(D) + (1, 0, 0)$) node [right] {Thruster C: $f(t)$} -- ($0.5*(G) + 0.5*(D) $);
-    \draw[thick,->] ($0.5*(F) + 0.5*(E) + (1, 0, 0)$) node [right] {Thruster B: $f(t)$} -- ($0.5*(F) + 0.5*(E) $);
+     \draw[] (O) -- (C) -- (G) -- (D) -- cycle;% Bottom Face
+     \draw[] (O) -- (A) -- (E) -- (D) -- cycle;% Back Face
+     \draw[] (O) -- (A) -- (B) -- (C) -- cycle;% Left Face
+     \draw[] (D) -- (E) -- (F) -- (G) -- cycle;% Right Face
+     \draw[] (C) -- (B) -- (F) -- (G) -- cycle;% Front Face
+     \draw[] (A) -- (B) -- (F) -- (E) -- cycle;% Top Face
 
-    \draw[thick,->] ($0.5*(A) + 0.5*(B) + (-1, 0, 0)$) node [left] {Thruster A: $f(t)$} -- ($0.5*(A) + 0.5*(B) $);
-    \draw[thick,->] ($0.5*(C) + 0.5*(O) + (-1, 0, 0)$) node [left] {Thruster D: $f(t)$} -- ($0.5*(C) + 0.5*(O) $);
-    %% Following is for debugging purposes so you can see where the points are
-    %% These are last so that they show up on top
-    % \foreach \xy in {O, A, B, C, D, E, F, G}{
-    %     \node at (\xy) {\xy};
-    % }
-\end{tikzpicture}
+     \node at (COM) {\textbullet};
+     \node [ above] at (COM) {COM};
 
-\begin{tikzpicture}
-    \pgfmathsetmacro{\dist}{1}
+     \draw[thick,->] (COM) -- (H) node [below] {Pitch Axis};
+     \draw[thick,->] ($(TC) + (1, 0, 0)$) node [right]  {Thruster C: $f(t)$} -- (TC);
+     \draw[thick,->] ($(TB) + (1, 0, 0)$) node [right]  {Thruster B: $f(t)$} -- (TB);
 
-    \coordinate[](origin) at (0, 0);
-    \coordinate[] (d) at (0, \dist);
-    \coordinate[] (w) at (0, 1.5*\dist);
+     \draw[thick,->] ($(TA) + (-1, 0, 0)$) node [left] {Thruster A: $f(t)$} -- (TA);
+     \draw[thick,->] ($(TD) + (-1, 0, 0)$) node [left] {Thruster D: $f(t)$} -- (TD);
 
-    \node[ground, anchor=north, minimum width=4em] (ground) at (origin) {};
-    \draw (ground.north west) -- (ground.north east);
-    
-    \draw[rot_damper] (origin.north) -- (w.south);
+     \draw[dashed] (TC) -- (TB) -- (TA) -- (TD) -- (TC);
+     %% Following is for debugging purposes so you can see where the points are
+     %% These are last so that they show up on top
+     % \foreach \xy in {O, A, B, C, D, E, F, G}{
+     %     \node at (\xy) {\xy};
+     % }
+ \end{tikzpicture}
 
-    \draw[thick] ($(w)+(-1,0.25)$) arc (-180:0:1 and 0.25);% right
-    \draw[thick] ($(w)+(-1,0.5)$) arc (-180:180:1 and 0.25);% 
+ \begin{tikzpicture}
+     \pgfmathsetmacro{\dist}{1}
 
-    \draw[thick, ->,>=stealth'] ($(w)+(-1,1.25)$) arc (-180:0:1 and 0.25) node [right] {$T(t)$};% 
+     \coordinate[](origin) at (0, 0);
+     \coordinate[] (d) at (0, \dist);
+     \coordinate[] (w) at (0, 1.5*\dist);
 
-    \draw[thick] ($(w) + (-1,0.25)$) -- ($(w) + (-1,0.5)$);
-    \draw[thick] ($(w) + (1,0.25)$) -- ($(w) + (1,0.5)$);
-\end{tikzpicture}
+     \node[ground, anchor=north, minimum width=4em] (ground) at (origin) {};
+     \draw (ground.north west) -- (ground.north east);
+
+     \draw[rot_damper] (origin.north) -- (w.south);
+
+     \draw[thick] ($(w)+(-1,0.25)$) arc (-180:0:1 and 0.25);% right
+     \draw[thick] ($(w)+(-1,0.5)$) arc (-180:180:1 and 0.25);% 
+
+     \draw[thick, ->,>=stealth'] ($(w)+(-1,1.25)$) arc (-180:0:1 and 0.25) node [right] {$T(t)$};% 
+
+     \draw[thick] ($(w) + (-1,0.25)$) -- ($(w) + (-1,0.5)$);
+     \draw[thick] ($(w) + (1,0.25)$) -- ($(w) + (1,0.5)$);
+ \end{tikzpicture}
  \end{document}
