@@ -1,0 +1,177 @@
+\documentclass[varwidth]{standalone}
+\usepackage{my_packages}
+\usepackage{tikz_packages}
+% TikZ styles for drawing
+\tikzstyle{block} = [draw,rectangle,thick,minimum height=2em,minimum width=2em]
+\tikzstyle{sum} = [draw,circle,inner sep=0mm,minimum size=2mm]
+\tikzstyle{connector} = [->,thick]
+\tikzstyle{line} = [thick]
+\tikzstyle{branch} = [circle,inner sep=0pt,minimum size=1mm,fill=black,draw=black]
+\tikzstyle{guide} = []
+\tikzstyle{snakeline} = [connector, decorate, decoration={pre length=0.2cm,
+                         post length=0.2cm, snake, amplitude=.4mm,
+                         segment length=2mm},thick, magenta, ->]
+
+\renewcommand{\vec}[1]{\ensuremath{\boldsymbol{#1}}} % bold vectors
+\def \myneq {\skew{-2}\not =} % \neq alone skews the dash
+\begin{document}
+\begin{tikzpicture}[scale=1, auto, >=stealth']
+    \small
+    % node placement with matrix library: 5x4 array
+    \matrix[ampersand replacement=\&, row sep=0.2cm, column sep=0.4cm] {
+        %
+        \node[block] (F1) {$\vec{u}_i = F_i(\{\widetilde{\vec{x}}_j\}_{j=1}^N)$}; \&
+        \node[branch] (u1) {}; \&
+        \&
+        \node[block] (f1) {$\begin{matrix}
+                \dot{\vec{x}}_i =
+                f_i(\vec{x}_i,
+                \textcolor{red}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
+                \vec{u}_i,
+                t)\\
+                \vec{y}_i =
+                g_i(\vec{x}_i,
+                \textcolor{blue}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
+                t)
+        \end{matrix}$}; \& \\
+
+        \&
+        \&
+        \&
+        \node[block] (L1) {$\vec{e}_i(\vec{y}_i - \widetilde{\vec{y}}_i)$};\&
+        \node [sum] (e1) {}; \\
+
+        \&
+        \&
+        \node[sum] (v1) {}; \&
+        \node[block] (o1) {$\begin{matrix}
+                \dot{\widetilde{\vec{x}}}_i =
+                \widetilde{f}_i(\widetilde{\vec{x}}_i,
+                \textcolor{red}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
+                \vec{v}_i, t)\\
+                \widetilde{\vec{y}}_i =
+                g_i(\widetilde{\vec{x}}_i,
+                \textcolor{blue}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
+                t)
+        \end{matrix}$};
+        \&
+        \\
+        \node[guide] (i1) {}; \& \& \& \& \\
+    };
+
+    % now link the nodes
+    \draw [line] (F1) -- (u1);
+    \draw [connector] (u1) -- node {$u_i$} (f1);
+    \draw [connector] (f1) -| node[near end] {$\vec{y}_i$} (e1);
+    \draw [connector] (e1) -- (L1);
+    \draw [connector] (L1) -| (v1);
+    \draw [connector] (v1) -- node {$\vec{v}_i$} (o1);
+    \draw [connector] (u1) |- (v1);
+    \draw [connector] (o1) -| node[pos=0.96] {$-$} node [near end, swap]
+    {$\widetilde{\vec{y}}_i$} (e1);
+    \draw [connector] (o1.south) -- ++(0,-.5cm) -| node [near start]
+    {$\widetilde{\vec{x}}_i$} ($(F1.south) + (0.4cm, 0em)$);
+
+    % draw the snake lines with offset (using the calc library)
+    \draw [snakeline] ($(i1) - (0.4cm, -1cm)$) -- node
+    {$\{\widetilde{\vec{x}}_j\}_{j \myneq i}$} ($(F1.south) - (0.4cm, 0em)$);
+
+    \draw [snakeline, swap] ($(v1.east) - (1.0cm, 0.4cm)$) -- node
+    {$\{\widetilde{\vec{x}}_j\}_{j \myneq i}$} ($(o1.west) - (0cm, 0.4cm)$);
+
+    \draw [snakeline, swap] ($(u1.east) + (0.1cm, -0.4cm)$) -- node
+    {$\{\widetilde{\vec{x}}_j\}_{j \myneq i}$} ($(f1.west) - (0cm, 0.4cm)$);
+
+\end{tikzpicture}
+
+
+% The block diagram code is probably more verbose than necessary
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+    \tikzstyle{block} = [draw, fill=blue!20, rectangle, 
+        minimum height=3em, minimum width=6em]
+    \tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+    \tikzstyle{input} = [coordinate]
+    \tikzstyle{output} = [coordinate]
+    \tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
+    % We start by placing the blocks
+    \node [input, name=input] {};
+    \node [sum, right of=input] (sum) {};
+    \node [block, right of=sum] (controller) {Controller};
+    \node [block, right of=controller, pin={[pinstyle]above:Disturbances},
+            node distance=3cm] (system) {System};
+    % We draw an edge between the controller and system block to 
+    % calculate the coordinate u. We need it to place the measurement block. 
+    \draw [->] (controller) -- node[name=u] {$u$} (system);
+    \node [output, right of=system] (output) {};
+    \node [block, below of=u] (measurements) {Measurements};
+
+    % Once the nodes are placed, connecting them is easy. 
+    \draw [draw,->] (input) -- node {$r$} (sum);
+    \draw [->] (sum) -- node {$e$} (controller);
+    \draw [->] (system) -- node [name=y] {$y$}(output);
+    \draw [->] (y) |- (measurements);
+    \draw [->] (measurements) -| node[pos=0.99] {$-$} 
+        node [near end] {$y_m$} (sum);
+    \end{tikzpicture}
+
+\begin{tikzpicture}[scale=1, auto, >=stealth']
+    \small
+    % node placement with matrix library: 5x4 array
+    \matrix[ampersand replacement=\&, row sep=0.2cm, column sep=0.4cm] {
+        %
+        \node[block] (F1) {$\vec{u}_i = F_i(\{\widetilde{\vec{x}}_j\}_{j=1}^N)$}; \&
+        \node[branch] (u1) {}; \&
+        \&
+        \node[block] (f1) {$\begin{matrix}
+                \dot{\vec{x}}_i =
+                f_i(\vec{x}_i,
+                \textcolor{red}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
+                \vec{u}_i,
+                t)\\
+                \vec{y}_i =
+                g_i(\vec{x}_i,
+                \textcolor{blue}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
+                t)
+        \end{matrix}$}; \& \\
+
+        \&
+        \&
+        \&
+        \node[block] (L1) {$\vec{e}_i(\vec{y}_i - \widetilde{\vec{y}}_i)$};\&
+        \node [sum] (e1) {}; \\
+
+        \&
+        \&
+        \node[sum] (v1) {}; \&
+        \node[block] (o1) {$\begin{matrix}
+                \dot{\widetilde{\vec{x}}}_i =
+                \widetilde{f}_i(\widetilde{\vec{x}}_i,
+                \textcolor{red}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
+                \vec{v}_i, t)\\
+                \widetilde{\vec{y}}_i =
+                g_i(\widetilde{\vec{x}}_i,
+                \textcolor{blue}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
+                t)
+        \end{matrix}$};
+        \&
+        \\
+        \node[guide] (i1) {}; \& \& \& \& \\
+    };
+
+    % now link the nodes
+    \draw [line] (F1) -- (u1);
+    \draw [connector] (u1) -- node {$u_i$} (f1);
+    \draw [connector] (f1) -| node[near end] {$\vec{y}_i$} (e1);
+    \draw [connector] (e1) -- (L1);
+    \draw [connector] (L1) -| (v1);
+    \draw [connector] (v1) -- node {$\vec{v}_i$} (o1);
+    \draw [connector] (u1) |- (v1);
+    \draw [connector] (o1) -| node[pos=0.96] {$-$} node [near end, swap]
+    {$\widetilde{\vec{y}}_i$} (e1);
+    \draw [connector] (o1.south) -- ++(0,-.5cm) -| node [near start]
+    {$\widetilde{\vec{x}}_i$} ($(F1.south) + (0.4cm, 0em)$);
+
+
+\end{tikzpicture}
+\end{document}
