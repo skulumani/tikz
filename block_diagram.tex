@@ -88,7 +88,7 @@
 % The block diagram code is probably more verbose than necessary
 \begin{tikzpicture}[auto, node distance=2cm,>=latex']
     \tikzstyle{block} = [draw, fill=blue!20, rectangle, 
-        minimum height=3em, minimum width=6em]
+    minimum height=3em, minimum width=6em]
     \tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
     \tikzstyle{input} = [coordinate]
     \tikzstyle{output} = [coordinate]
@@ -99,7 +99,7 @@
     \node [sum, right of=input] (sum) {};
     \node [block, right of=sum] (controller) {Controller};
     \node [block, right of=controller, pin={[pinstyle]above:Disturbances},
-            node distance=3cm] (system) {System};
+        node distance=3cm] (system) {System};
     % We draw an edge between the controller and system block to 
     % calculate the coordinate u. We need it to place the measurement block. 
     \draw [->] (controller) -- node[name=u] {$u$} (system);
@@ -113,65 +113,20 @@
     \draw [->] (y) |- (measurements);
     \draw [->] (measurements) -| node[pos=0.99] {$-$} 
         node [near end] {$y_m$} (sum);
-    \end{tikzpicture}
+\end{tikzpicture}
 
-\begin{tikzpicture}[scale=1, auto, >=stealth']
-    \small
+\begin{tikzpicture}[scale=1, auto, >=stealth'] \small
     % node placement with matrix library: 5x4 array
     \matrix[ampersand replacement=\&, row sep=0.2cm, column sep=0.4cm] {
         %
-        \node[block] (F1) {$\vec{u}_i = F_i(\{\widetilde{\vec{x}}_j\}_{j=1}^N)$}; \&
-        \node[branch] (u1) {}; \&
-        \&
-        \node[block] (f1) {$\begin{matrix}
-                \dot{\vec{x}}_i =
-                f_i(\vec{x}_i,
-                \textcolor{red}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
-                \vec{u}_i,
-                t)\\
-                \vec{y}_i =
-                g_i(\vec{x}_i,
-                \textcolor{blue}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
-                t)
-        \end{matrix}$}; \& \\
+        \node[branch] (input) {}; \& \node[block] (sys) {$ \frac{s^5 + 2s^4
+            +4s^3 + s^2 +3}{s^6 +7s^5 +3s^4 + 2s^3 + s^2 +3}$}; \& \node[branch]
+            (output) {};\\ };
 
-        \&
-        \&
-        \&
-        \node[block] (L1) {$\vec{e}_i(\vec{y}_i - \widetilde{\vec{y}}_i)$};\&
-        \node [sum] (e1) {}; \\
-
-        \&
-        \&
-        \node[sum] (v1) {}; \&
-        \node[block] (o1) {$\begin{matrix}
-                \dot{\widetilde{\vec{x}}}_i =
-                \widetilde{f}_i(\widetilde{\vec{x}}_i,
-                \textcolor{red}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
-                \vec{v}_i, t)\\
-                \widetilde{\vec{y}}_i =
-                g_i(\widetilde{\vec{x}}_i,
-                \textcolor{blue}{\{\widetilde{\vec{x}}_j\}_{j \myneq i}},
-                t)
-        \end{matrix}$};
-        \&
-        \\
-        \node[guide] (i1) {}; \& \& \& \& \\
-    };
-
-    % now link the nodes
-    \draw [line] (F1) -- (u1);
-    \draw [connector] (u1) -- node {$u_i$} (f1);
-    \draw [connector] (f1) -| node[near end] {$\vec{y}_i$} (e1);
-    \draw [connector] (e1) -- (L1);
-    \draw [connector] (L1) -| (v1);
-    \draw [connector] (v1) -- node {$\vec{v}_i$} (o1);
-    \draw [connector] (u1) |- (v1);
-    \draw [connector] (o1) -| node[pos=0.96] {$-$} node [near end, swap]
-    {$\widetilde{\vec{y}}_i$} (e1);
-    \draw [connector] (o1.south) -- ++(0,-.5cm) -| node [near start]
-    {$\widetilde{\vec{x}}_i$} ($(F1.south) + (0.4cm, 0em)$);
+        % now link the nodes
+        \draw [line] (input) node [above] {$C(s)$} -- (sys) -- node [above
+            right] {$R(s)$}  (output);
 
 
-\end{tikzpicture}
+    \end{tikzpicture}
 \end{document}
