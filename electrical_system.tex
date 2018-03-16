@@ -1,4 +1,4 @@
-\documentclass[border=5mm]{standalone}
+\documentclass[varwidth,border=5mm]{standalone}
 \usepackage{my_packages}
 \usepackage{tikz_packages}
 \usepackage{pgfplots}
@@ -15,4 +15,23 @@
     \end{tikzpicture}
 \end{scaletikzpicturetowidth}
 
+\begin{scaletikzpicturetowidth}{0.8\textwidth}
+    \begin{tikzpicture}[scale=\tikzscale]
+        \draw (0,0) to[american voltage source,v<=\( u(t)\)] (0,2) 
+        to[resistor, l^=$R_1$] (2,2) to[capacitor, l=$C$] (2,0) 
+        to[inductor, l^=$L_1$] (0,0); 
+        \draw (2,2) to[short] (4,2)
+        to[inductor, l=$L_2$] (4,0) to[short] (2,0);
+    \end{tikzpicture}
+\end{scaletikzpicturetowidth}
+
+\begin{scaletikzpicturetowidth}{0.8\textwidth}
+    \begin{tikzpicture}[scale=\tikzscale]
+        \draw (0,0) to[american voltage source,v<=\( u(t)\)] (0,2) 
+            to[resistor, l^=$R_1$] (2,2) to[inductor, l=$H_1$] (2,0) 
+            to[short] (0,0); 
+        \draw (2, 2) to[resistor, l^=$R_2$] (4, 2) to[inductor, l=$H_2$] (4, 0) to[short] (2, 0);
+        \draw (4, 2) to[resistor, l=$R_3$] (6, 2) to[capacitor, l=$C_1$] (6, 0) to[short] (4, 0);
+    \end{tikzpicture}
+\end{scaletikzpicturetowidth}
 \end{document}
