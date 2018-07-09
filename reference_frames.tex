@@ -21,7 +21,11 @@
 \pgfmathsetmacro{\rvec}{.8}
 \pgfmathsetmacro{\thetavec}{30}
 \pgfmathsetmacro{\phivec}{60}
-
+\pgfmathsetmacro{\Px}{0.2}
+\pgfmathsetmacro{\Py}{0.346}
+\pgfmathsetmacro{\Pz}{0.693}
+\pgfmathsetmacro{\b}{0.5}
+\pgfmathsetmacro{\d}{0.3}
 %start tikz picture, and use the tdplot_main_coords style to implement the display 
 %coordinate transformation provided by 3dplot
 \begin{tikzpicture}[scale=5,tdplot_main_coords]
@@ -29,13 +33,12 @@
 %set up some coordinates 
 %-----------------------
 \coordinate (O) at (0,0,0);
-
+\coordinate (Ptikz) at (\Px, \Py, \Pz);
 %determine a coordinate (P) using (r,\theta,\phi) coordinates.  This command
 %also determines (Pxy), (Pxz), and (Pyz): the xy-, xz-, and yz-projections
 %of the point (P).
 %syntax: \tdplotsetcoord{Coordinate name without parentheses}{r}{\theta}{\phi}
-\tdplotsetcoord{P}{\rvec}{\thetavec}{\phivec}
-
+% \tdplotsetcoord{P}{\rvec}{\thetavec}{\phivec}
 %draw figure contents
 %--------------------
 
@@ -45,7 +48,7 @@
 \draw[thick,->] (0,0,0) -- (0,0,1) node[anchor=south]{$e_3 = f_3$};
 
 %draw a vector from origin to point (P) 
-\draw[-stealth,color=red] (O) -- node [below right] {$ r $} (P);
+\draw[-stealth,color=red] (O) -- node [below right] {$ r $} (\Px, \Py, \Pz);
 
 %draw the angle \phi, and label it
 %syntax: \tdplotdrawarc[coordinate frame, draw options]{center point}{r}{angle}{label options}{label}
@@ -73,12 +76,35 @@
 
 %translate the rotated coordinate system
 %syntax: \tdplotsetrotatedcoordsorigin{point}
-\tdplotsetrotatedcoordsorigin{(P)}
+\tdplotsetrotatedcoordsorigin{(Ptikz)}
 
 %use the tdplot_rotated_coords style to work in the rotated, translated coordinate frame
-\draw[thick,tdplot_rotated_coords,->] (0,0,0) -- (.5,0,0) node[anchor=north west]{$b_1$};
-\draw[thick,tdplot_rotated_coords,->] (0,0,0) -- (0,.5,0) node[anchor=west]{$b_2$};
-\draw[thick,tdplot_rotated_coords,->] (0,0,0) -- (0,0,.5) node[anchor=south]{$b_3$};
+\draw[thick,tdplot_rotated_coords,->] (0,0,0) -- (\b,0,0) node[anchor=north west]{$b_1$};
+\draw[thick,tdplot_rotated_coords,->] (0,0,0) -- (0,\b,0) node[anchor=west]{$b_2$};
+\draw[thick,tdplot_rotated_coords,->] (0,0,0) -- (0,0,\b) node[anchor=south]{$b_3$};
+
+% transform the first dumbbell
+% rot to main
+\tdplottransformrotmain{\d}{0}{0};
+\tdplottransformmainscreen{\tdplotresx}{\tdplotresy}{\tdplotresz};
+\pgfmathsetmacro{\DMonescreenx}{\tdplotresx};
+\pgfmathsetmacro{\DMonescreeny}{\tdplotresy};
+
+\tdplottransformrotmain{-\d}{0}{0};
+\tdplottransformmainscreen{\tdplotresx}{\tdplotresy}{\tdplotresz};
+\pgfmathsetmacro{\DMtwoscreenx}{\tdplotresx};
+\pgfmathsetmacro{\DMtwoscreeny}{\tdplotresy};
+
+% transform P to screen coordinates and then add
+\tdplottransformmainscreen{\Px}{\Py}{\Pz};
+\pgfmathsetmacro{\Pscreenx}{\tdplotresx};
+\pgfmathsetmacro{\Pscreeny}{\tdplotresy};
+
+\draw[ultra thick, color=blue, tdplot_rotated_coords] (-\d, 0, 0) -- (\d, 0, 0);
+
+\shade[ball color=red, tdplot_screen_coords] (\Pscreenx, \Pscreeny) circle (0.03);
+\shade[ball color=blue,tdplot_screen_coords] ($(\Pscreenx, \Pscreeny) + (\DMonescreenx, \DMonescreeny) + (0, 0.01)$) circle (0.03);
+\shade[ball color=blue,tdplot_screen_coords] ($(\Pscreenx, \Pscreeny) + (\DMtwoscreenx, \DMtwoscreeny) + (0, -0.01)$ ) circle (0.03);
 
 %WARNING:  coordinates defined by the \coordinate command (eg. (O), (P), etc.)
 %cannot be used in rotated coordinate frames.  Use only literal coordinates.  
