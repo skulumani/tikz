@@ -1,0 +1,152 @@
+
+% Stereographic and cylindrical map projections
+% Author: Tomasz M. Trzeciak
+% Source: LaTeX-Community.org 
+%         <http://www.latex-community.org/viewtopic.php?f=4&t=2111>
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc,fadings,decorations.pathreplacing}
+%% helper macros
+
+\newcommand\pgfmathsinandcos[3]{%
+  \pgfmathsetmacro#1{sin(#3)}%
+  \pgfmathsetmacro#2{cos(#3)}%
+}
+\newcommand\LongitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % azimuth
+  \tikzset{#1/.style={cm={\cost,\sint*\sinEl,0,\cosEl,(0,0)}}}
+}
+\newcommand\LatitudePlane[3][current plane]{%
+  \pgfmathsinandcos\sinEl\cosEl{#2} % elevation
+  \pgfmathsinandcos\sint\cost{#3} % latitude
+  \pgfmathsetmacro\yshift{\cosEl*\sint}
+  \tikzset{#1/.style={cm={\cost,0,0,\cost*\sinEl,(0,\yshift)}}} %
+}
+
+\newcommand\DrawLongitudeCircle[4][1]{
+\LongitudePlane{\angEl}{#2}
+\tikzset{current plane/.prefix style={scale=#1}}
+% angle of "visibility"
+\pgfmathsetmacro\angVis{
+atan(sin(#2)*cos(\angEl)/sin(\angEl))} %
+\draw[shift={(#3, #4)}][current plane]
+(\angVis:1) arc (\angVis:\angVis+180:1);
+\draw[shift={(#3, #4)}][current plane,dashed]
+(\angVis-180:1)arc(\angVis-180:\angVis:1);
+}
+\newcommand\DrawLatitudeCircle[4][1]{
+\LatitudePlane{\angEl}{#2}
+\tikzset{current plane/.prefix style={scale=#1}}
+\pgfmathsetmacro\sinVis{
+sin(#2)/cos(#2)*sin(\angEl)/cos(\angEl)}
+% angle of "visibility"
+\pgfmathsetmacro\angVis{
+asin(min(1,max(\sinVis,-1)))}
+\draw[shift={(#3, #4)}][current plane]
+(\angVis:1) arc (\angVis:-\angVis-180:1);
+\draw[shift={(#3, #4)}][current plane,dashed]
+(180-\angVis:1)arc(180-\angVis:\angVis:1);
+}
+
+%% document-wide tikz options and styles
+
+\tikzset{%
+  >=latex, % option for nice arrows
+  inner sep=0pt,%
+  outer sep=2pt,%
+  mark coordinate/.style={inner sep=0pt,outer sep=0pt,minimum size=3pt,
+    fill=black,circle}%
+}
+
+\newcommand\calculateCenterSpan[4]{
+\pgfmathsetmacro#1{((#2)^2+(#3)^2+(#4)^2)^(1/2)}}
+\newcommand\calculateAngtheta[3]{
+\pgfmathsetmacro#1{acos(#2/#3)}}
+\newcommand\calculateShiftDistance[4]{
+\pgfmathsetmacro#1{((((#2)^2-(#3)^2)/(2*#4)+#4/2))}}
+\newcommand\calculateShiftDistancePercent[3]{
+\pgfmathsetmacro#1{#2/#3}}
+\newcommand\calculateCircleRadius[3]{
+\pgfmathsetmacro#1{((#2)^2 - (#3)^2)^(1/2)}
+}
+% The function below does not use the
+% rotation matrices about coordinate axes,
+% but instead computes the vector that we
+% want to rotate around, then the
+% corresponding rotation matrix, and then
+% (as before) projects to the xy-plane.
+% It also shifts to the correct location.
+\newcommand\drawIntersectionOfSpheres[9]{
+% Parameters are: CenterSphere1x, CenterSphere1y,
+% CenterSphere1z, CenterSphere2x,
+% CenterSphere2y, CenterSphere2z,
+% RadiusSphere1, RadiusSphere2, DrawColor.
+\pgfmathsetmacro\xchange{#4 - #1}
+\pgfmathsetmacro\ychange{#5 - #2}
+\pgfmathsetmacro\zchange{#6 - #3}
+\pgfmathsetmacro\firstSphereCenterx{#1}
+\pgfmathsetmacro\firstSphereCentery{#2}
+\calculateCenterSpan\centerSpan{
+\xchange}{\ychange}{\zchange}
+\calculateAngtheta\angtheta{\zchange}{\centerSpan}
+\calculateShiftDistance\shiftDistance{
+#7}{#8}{\centerSpan}
+\calculateShiftDistancePercent\shiftDistancePercent{
+\shiftDistance}{\centerSpan}
+\calculateCircleRadius\circleRadius{
+#7}{\shiftDistance}
+\pgfmathsetmacro\ux{\ychange}
+\pgfmathsetmacro\uy{-\xchange}
+\pgfmathsetmacro\C{1-cos(\angtheta)}
+\pgfmathsetmacro\L{((\ux)^2 + (\uy)^2)^(1/2)}
+\pgfmathsetmacro\first{
+cos(\angtheta) + (\ux)^2*\C/(\L^2)}
+\pgfmathsetmacro\second{\ux*\uy*\C/(\L^2)}
+\pgfmathsetmacro\third{\ux*\uy*\C/(\L^2)}
+\pgfmathsetmacro\fourth{
+cos(\angtheta)+(\uy)^2*\C/(\L^2)}
+\tikzset{xyplane/.estyle={cm={\first,\second,\third,
+\fourth,(\firstSphereCenterx+\shiftDistancePercent
+*\xchange,\firstSphereCentery
++\shiftDistancePercent*\ychange)}}}
+\pgfmathsetmacro\dAng{atan(\xchange/\ychange)}
+\draw[xyplane, color=#9, ultra thick]
+(-\dAng: \circleRadius) arc
+(-\dAng:-\dAng-180:\circleRadius);
+\draw[xyplane, color=#9, ultra thick, dashed]
+(-\dAng+180: \circleRadius) arc
+(-\dAng+180:-\dAng:\circleRadius);
+}
+
+\begin{document}
+% The intersection of two spheres.
+\begin{tikzpicture}[scale=.8]
+% Draw the first sphere.
+\def\Rb{3.1} % sphere radius
+\def\angEl{30} % elevation angle
+\def\xb{3} % x coordinate of center
+\def\yb{3} % y coordinate of center
+\def\zb{-1} % z coordinate of center
+\filldraw[shift={(\xb, \yb)}][ball color= blue]
+(0, 0, 0) circle (\Rb);
+\foreach \t in {-60,-20,...,80} {
+\DrawLatitudeCircle[\Rb]{\t}{\xb}{\yb}}
+\foreach \t in {-5,-45,...,-175} {
+\DrawLongitudeCircle[\Rb]{\t}{\xb}{\yb}}
+% Draw the second sphere.
+\def\Rc{2.4} % sphere radius
+\def\angEl{30} % elevation angle
+\def\xc{0} % x coordinate of center
+\def\yc{0} % y coordinate of center
+\def\zc{0} % z coordinate of center
+\filldraw[shift={(\xc, \yc)}][ball color= red]
+(0,0,0) circle (\Rc);
+\foreach \t in {-60,-20,...,80} {
+\DrawLatitudeCircle[\Rc]{\t}{\xc}{\yc}}
+\foreach \t in {-5,-45,...,-175} {
+\DrawLongitudeCircle[\Rc]{\t}{\xc}{\yc}}
+\drawIntersectionOfSpheres{\xc}{\yc}{\zc}{\xb}
+{\yb}{\zb}{\Rc}{\Rb}{yellow}
+\end{tikzpicture}
+\end{document}
