@@ -16,6 +16,9 @@
 %synatax: \tdplotsetdisplay{\theta_d}{\phi_d}
 \tdplotsetmaincoords{60}{110}
 
+%start tikz picture, and use the tdplot_main_coords style to implement the display 
+%coordinate transformation provided by 3dplot
+\begin{tikzpicture}[scale=5,tdplot_main_coords]
 %define polar coordinates for some vector
 %TODO: look into using 3d spherical coordinate system
 \pgfmathsetmacro{\rvec}{.8}
@@ -26,9 +29,6 @@
 \pgfmathsetmacro{\Pz}{0.693}
 \pgfmathsetmacro{\b}{0.5}
 \pgfmathsetmacro{\d}{0.3}
-%start tikz picture, and use the tdplot_main_coords style to implement the display 
-%coordinate transformation provided by 3dplot
-\begin{tikzpicture}[scale=5,tdplot_main_coords]
 
 %set up some coordinates 
 %-----------------------
