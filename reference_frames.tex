@@ -1,11 +1,7 @@
 \documentclass{standalone}
 \usepackage{tikz}   %TikZ is required for this to work.  Make sure this exists before the next line
-
 \usepackage{tikz-3dplot}
-
-\usepackage[active,tightpage]{preview}  %generates a tightly fitting border around the work
-\PreviewEnvironment{tikzpicture}
-\setlength\PreviewBorder{2mm}
+\usetikzlibrary{arrows.meta}
 
 \begin{document}
 
@@ -43,12 +39,12 @@
 %--------------------
 
 %draw the main coordinate system axes
-\draw[thick,->] (0,0,0) -- (1,0,0) node[anchor=north east]{$e_1$};
-\draw[thick,->] (0,0,0) -- (0,1,0) node[anchor=north west]{$e_2$};
-\draw[thick,->] (0,0,0) -- (0,0,1) node[anchor=south]{$e_3 = f_3$};
+\draw[thick,-Latex] (0,0,0) -- (1,0,0) node[anchor=north east]{$e_1$};
+\draw[thick,-Latex] (0,0,0) -- (0,1,0) node[anchor=north west]{$e_2$};
+\draw[thick,-Latex] (0,0,0) -- (0,0,1) node[anchor=south]{$e_3 = f_3$};
 
 %draw a vector from origin to point (P) 
-\draw[-stealth,color=red] (O) -- node [below right] {$ r $} (\Px, \Py, \Pz);
+\draw[-stealth,color=red, -Latex] (O) -- node [below right] {$ r $} ($(\Px, \Py, \Pz) $);
 
 %draw the angle \phi, and label it
 %syntax: \tdplotdrawarc[coordinate frame, draw options]{center point}{r}{angle}{label options}{label}
@@ -62,7 +58,7 @@
 
 % draw the asteroid frame
 % \draw[thick,->,tdplot_rotated_coords] (0,0,0) -- (1,0,0) node[anchor=north east]{$f_3$};
-\draw[thick,->,tdplot_rotated_coords] (0,0,0) -- (0,1,0) node[anchor=north west]{$f_1$};
+\draw[thick,-Latex,tdplot_rotated_coords] (0,0,0) -- (0,1,0) node[anchor=north west]{$f_1$};
 % \draw[thick,->,tdplot_rotated_coords] (0,0,0) -- (0,0,1) node[anchor=north west]{$f_2$};
 
 %draw some dashed arcs, demonstrating direct arc drawing
@@ -79,9 +75,9 @@
 \tdplotsetrotatedcoordsorigin{(Ptikz)}
 
 %use the tdplot_rotated_coords style to work in the rotated, translated coordinate frame
-\draw[thick,tdplot_rotated_coords,->] (0,0,0) -- (\b,0,0) node[anchor=north west]{$b_1$};
-\draw[thick,tdplot_rotated_coords,->] (0,0,0) -- (0,\b,0) node[anchor=west]{$b_2$};
-\draw[thick,tdplot_rotated_coords,->] (0,0,0) -- (0,0,\b) node[anchor=south]{$b_3$};
+\draw[thick,tdplot_rotated_coords,-Latex] (0,0,0) -- (\b,0,0) node[anchor=north west]{$b_1$};
+\draw[thick,tdplot_rotated_coords,-Latex] (0,0,0) -- (0,\b,0) node[anchor=west]{$b_2$};
+\draw[thick,tdplot_rotated_coords,-Latex] (0,0,0) -- (0,0,\b) node[anchor=south]{$b_3$};
 
 % transform the first dumbbell
 % rot to main
@@ -102,9 +98,9 @@
 
 \draw[ultra thick, color=blue, tdplot_rotated_coords] (-\d, 0, 0) -- (\d, 0, 0);
 
-\shade[ball color=red, tdplot_screen_coords] (\Pscreenx, \Pscreeny) circle (0.03);
-\shade[ball color=blue,tdplot_screen_coords] ($(\Pscreenx, \Pscreeny) + (\DMonescreenx, \DMonescreeny) + (0, 0.01)$) circle (0.03);
-\shade[ball color=blue,tdplot_screen_coords] ($(\Pscreenx, \Pscreeny) + (\DMtwoscreenx, \DMtwoscreeny) + (0, -0.01)$ ) circle (0.03);
+\shade[ball color=red, tdplot_screen_coords, opacity=0.3] (\Pscreenx, \Pscreeny) circle (0.03);
+\shade[ball color=blue,tdplot_screen_coords] ($(\Pscreenx, \Pscreeny) + (\DMonescreenx, \DMonescreeny) + (0, 0.015)$) circle (0.03);
+\shade[ball color=blue,tdplot_screen_coords] ($(\Pscreenx, \Pscreeny) + (\DMtwoscreenx, \DMtwoscreeny) + (0, -0.015)$ ) circle (0.03);
 
 %WARNING:  coordinates defined by the \coordinate command (eg. (O), (P), etc.)
 %cannot be used in rotated coordinate frames.  Use only literal coordinates.  
