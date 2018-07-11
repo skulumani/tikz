@@ -1,42 +1,50 @@
-\documentclass{standalone}
+\documentclass{standalone} 
+\usepackage{tikz} 
+\usetikzlibrary{calc} 
 
-\usepackage{tikz}
-\usepackage{pgfplots,tikz-3dplot}
-\makeatother
-\begin{document}
-\begin{tikzpicture}
-    \begin{axis}[%
-        % width=0.8\textwidth,
-        % axis equal,
-        axis lines = center,
-        x label style={at={(axis cs:3,0,0)},anchor=west},
-        y label style={at={(axis cs:0,4,0)},anchor=west},
-        z label style={at={(axis cs:0,0,1)},anchor=west},
-        xlabel = {a},
-        ylabel = {b},
-        zlabel = {c},
-        xmax=3,
-        ymax=4,
-        zmax=1,
-        ticks=none,
-        % colormap={}{ gray(0cm)=(0.8); gray(1cm)=(0);}
-    ]
-    \addplot3[%
-        fill opacity=0.3,
-        surf,
-        % shader=flat,
-        faceted color=gray,
-        % shader=interp,
-        %shader=faceted,
-        %shader=flat corner,
-        % shader=flat mean,
-        % shader=faceted interp,
-        samples = 10,
-        domain=0:2*pi,y domain=0:pi,
-        z buffer=sort
-        ]
-        ({2*cos(deg(x))*sin(deg(y))}, {2*sin(deg(x))*sin(deg(y))}, {0.5*cos(deg(y))});
-    \end{axis}
-%
-\end{tikzpicture}
+\newcommand\pgfmathsinandcos[3]{% 
+\pgfmathsetmacro#1{sin(#3)} 
+\pgfmathsetmacro#2{cos(#3)}} 
+
+\newcommand\LatitudePlane[3][current plane]{%
+\pgfmathsinandcos\sinEl\cosEl{#2}
+\pgfmathsinandcos\sint\cost{#3} 
+}
+
+\newcommand\LongitudePlane[3][current plane]{%
+\pgfmathsinandcos\sinEl\cosEl{#2}
+\pgfmathsinandcos\sint\cost{#3} 
+\tikzset{#1/.style={cm={\cost,\sint*\sinEl,0,\cosEl,(0,0)}}}}
+
+\newcommand\DrawLatitudeCircle[2][1]{
+\LatitudePlane{\angEl}{#2}
+\tikzset{current plane/.style={cm={\cost,0,0,\cost*\sinEl,(0,\cosEl*\sint)}}}
+\tikzset{current plane/.prefix style={xscale=\R,yscale=\RR}}
+
+\pgfmathsetmacro\sinVis{tan(#2)*tan(\angEl)} 
+% angle of "visibility"
+  \pgfmathsetmacro\angVis{asin(min(1,max(\sinVis,-1)))}  
+  \draw[current plane] (\angVis:1) arc (\angVis:-\angVis-180:1); 
+  \draw[current plane,dashed,black!80] (180-\angVis:1) arc (180-\angVis:\angVis:1);
+}
+\newcommand\DrawLongitudeCircle[2][1]{
+  \LongitudePlane{\angEl}{#2}
+  \tikzset{current plane/.prefix style={xscale=\R,yscale=\RR}}
+% angle of "visibility" 
+  \pgfmathsetmacro\angVis{atan(sin(#2)*cos(\angEl)/sin(\angEl))} %
+  \draw[current plane] (\angVis:1) arc (\angVis:\angVis+180:1); 
+  \draw[current plane,dashed] (\angVis-180:1) arc (\angVis-180:\angVis:1); 
+}
+\begin{document} 
+\begin{tikzpicture}[scale=1]
+\def\R{4}
+\def\RR{2} 
+\def\angEl{45}
+\filldraw[ball color=gray!50, opacity=0.2] (0,0) circle[x radius=\R, y radius=\RR];
+\foreach \t in {-80,-70,...,80} { \DrawLatitudeCircle[\R]{\t} }
+\foreach \t in {-5,-35,...,-175} { \DrawLongitudeCircle[\R]{\t} }
+
+\draw[ultra thick, color=blue] (-\R,0) -- (\R,0);
+\end{tikzpicture} 
+
 \end{document}
