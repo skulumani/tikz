@@ -1,0 +1,25 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{arrows.meta}
+\begin{document}
+% sqare of half axes
+\newcommand{\asa}{3}
+\newcommand{\bsa}{2}
+\newcommand{\csa}{1}
+% view angle
+\tdplotsetmaincoords{70}{135}
+%
+\begin{tikzpicture}[tdplot_main_coords,line join=bevel,fill opacity=.6]
+    \pgfsetlinewidth{.1pt}
+    \tdplotsphericalsurfaceplot[parametricfill]{36}{36}%
+        {1/sqrt((sin(\tdplottheta))^2*(cos(\tdplotphi))^2/\asa+
+        (sin(\tdplottheta))^2*(sin(\tdplotphi))^2/\bsa + (cos(\tdplottheta))^2/\csa)} % function defining radius
+        {black} % line color
+        {2*\tdplottheta} % fill
+        {\draw[color=black,thick,-Latex] (0,0,0) -- (3,0,0) node[anchor=east]{$x$};}% x-axis
+        {\draw[color=black,thick,-Latex] (0,0,0) -- (0,3,0) node[anchor=west]{$y$};}% y-axis
+        {\draw[color=black,thick,-Latex] (0,0,0) -- (0,0,2) node[anchor=south]{$z$};}% z-axis
+\end{tikzpicture}
+%
+\end{document}
