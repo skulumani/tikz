@@ -1,0 +1,54 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz,amsmath}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{shapes,calc,positioning}
+
+\begin{document}
+
+\tdplotsetmaincoords{75}{95}
+%
+\pgfmathsetmacro{\rvec}{.8}
+\pgfmathsetmacro{\thetavec}{40}
+\pgfmathsetmacro{\phivec}{35}
+%
+\definecolor{darkgreen}{rgb}{0.1,0.7,0.1}
+
+\begin{tikzpicture}[scale=5,tdplot_main_coords]
+\coordinate (O) at (0,0,0);
+\draw[thick,->] (0,0,0) -- (1,0,0) node[anchor=north east]{$x_{\text{ECEF}}$};
+\draw[thick,->] (0,0,0) -- (0,1,0) node[anchor=north west]{$y_{\text{ECEF}}$};
+\draw[thick,->] (0,0,0) -- (0,0,1) node[anchor=south]{$z_{\text{ECEF}}$};
+
+\tdplotsetcoord{P}{\rvec}{\thetavec}{\phivec}
+\draw[-stealth,color=red] (O) -- (P) node [midway, left] {\( r_{M}^e \)};
+\draw[dashed, color=red, shorten >=-20pt ] (O) -- (Pxy);
+\tdplotdrawarc{(O)}{0.4}{0}{\phivec}{anchor=north}{$\lambda$}
+\tdplotdrawarc[blue]{(O)}{0.8}{-90}{90}{}{}
+\tdplotdrawarc[dashed,blue]{(O)}{0.8}{90}{270}{}{}
+%
+\tdplotsetthetaplanecoords{\phivec}
+\tdplotdrawarc[tdplot_rotated_coords]{(0,0,0)}{0.5}{\thetavec}%
+{90}{right}{$\phi$}
+\tdplotdrawarc[tdplot_rotated_coords]{(0,0,0)}{0.8}
+{0}{90}{}{}
+%
+\tdplotsetthetaplanecoords{0}
+\tdplotdrawarc[tdplot_rotated_coords]{(0,0,0)}{0.8}{0}{90}{left}{\rotatebox[origin=cc]{85}{Prime Meridian}}
+%
+\tdplotsetthetaplanecoords{90}
+\tdplotdrawarc[tdplot_rotated_coords,blue]{(0,0,0)}{0.8}
+{0}{360}{}{}
+%
+\tdplotsetrotatedcoords{\phivec}{\thetavec}{0}
+\tdplotsetrotatedcoordsorigin{(P)}
+\draw[thick,tdplot_rotated_coords,-,draw=green,fill=white] (-0.1,-0.1,0)
+-- (-0.1,0.1,0) -- (0.1,0.1,0)  -- (0.1,-0.1,0)  -- cycle  ;
+\draw[thick,tdplot_rotated_coords,->,green] (0,0,0)
+-- (-0.5,0,0) node[anchor=west]{$North$};
+\draw[thick,tdplot_rotated_coords,->,green] (0,0,0)
+-- (0,0.5,0) node[anchor=south]{$East$};
+\draw[thick,tdplot_rotated_coords,->,green] (0,0,0)
+-- (0,0,-0.5) node[anchor=south, right]{$Down$};
+\end{tikzpicture}
+
+\end{document}
