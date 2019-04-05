@@ -1,4 +1,4 @@
-\documentclass[varwidth]{standalone}
+\documentclass[varwidth,border=5mm]{standalone}
 \usepackage{my_packages}
 \usepackage{tikz_packages}
 % TikZ styles for drawing
@@ -31,15 +31,43 @@
 
     % We start by placing the blocks
     \node [input, name=truth] {};
+    \node [branch, left of=truth] (stateestnode) {};
+
     \node [branch, right of=truth] (branch) {};
+
+    \node [coordinate,below of=branch] (spoofnode) {};
+    \node [coordinate,below of=spoofnode] (irsnode) {};
+
     \node [block, right of=branch] (GPS) {GPS};
     \node [block, below of=GPS] (Spoof) {Spoof};
     \node [block, below of=Spoof] (IRS) {IRS};
 
-    \node [block, right of=GPS, node distance=3cm] (system) {System};
+    \node [block, right of=Spoof, node distance=3cm] (CAFE) {CAFE};
+    \node [coordinate,above of=CAFE] (cafenode) {};
+    \node [coordinate, below of=CAFE] (irsoutputnode) {};
+    \node [coordinate, right of=CAFE] (cafeoutputnode) {};
 
-    \draw [draw, ->] (truth) -- node {Truth} (branch);
+    \node [block, below of=IRS] (AP) {AP};
+    \node [coordinate, below of=irsoutputnode] (apinputnode) {};
+    \node [coordinate, right of=apinputnode] (apinputnode2) {};
 
+    \node [block, left of=AP, node distance=3cm] (Plant) {A/C Plant};
+    
+    \node [block, left of=Plant, node distance=3cm] (Track) {Target Tracking};
+
+    \draw [draw, ->] (stateestnode) -- node {State} (branch) -- (GPS);
+    \draw [draw, ->] (branch) -- (spoofnode) -- (Spoof);
+    \draw [draw, ->] (spoofnode) -- (irsnode) -- (IRS);
+
+    \draw [draw,->] (GPS.east) -- (cafenode) -- (CAFE.north);
+    \draw [draw,->, dashed] (Spoof) -- (CAFE.west);
+    \draw [draw,->] (IRS.east) -- (irsoutputnode) -- (CAFE.south);
+
+    \draw [draw,->] (CAFE.east) -- (cafeoutputnode) -- (apinputnode2) -- (AP.east);
+
+    \draw [draw,->] (AP.west) -- (Plant.east);
+    \draw [draw,->] (Plant.west) -- (Track.east); 
+    \draw [draw,->,dashed] (Track.north) -- node[label={[rotate=90]State Estimate}] {}  (stateestnode);
     % We draw an edge between the controller and system block to 
     % calculate the coordinate u. We need it to place the measurement block. 
     % \draw [->] (controller) -- node[name=u] {$u$} (system);
