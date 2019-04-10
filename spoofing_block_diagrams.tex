@@ -1,0 +1,268 @@
+\documentclass{standalone}
+\usepackage{my_packages}
+\usepackage{tikz_packages}
+
+\begin{document}
+
+\tikzstyle{block} = [draw, fill=blue!20, rectangle, 
+minimum height=3em, minimum width=6em]
+\tikzstyle{switch} = [draw, rectangle, minimum height=3em, minimum width=3em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+\tikzstyle{branch}=[fill,shape=circle,minimum size=3pt,inner sep=0pt]
+% from : https://tex.stackexchange.com/questions/161075/saturation-block?noredirect=1&lq=1
+\tikzset{%
+    saturation block/.style={%
+        minimum width = 3em,
+        minimum height = 3em,
+        draw, 
+        path picture={
+            % Get the width and height of the path picture node
+            \pgfpointdiff{\pgfpointanchor{path picture bounding box}{north east}}%
+            {\pgfpointanchor{path picture bounding box}{south west}}
+            \pgfgetlastxy\x\y
+            % Scale the x and y vectors so that the range
+            % -1 to 1 is slightly shorter than the size of the node
+            \tikzset{x=\x*.4, y=\y*.4}
+            %
+            % Draw annotation
+            \draw (-1,0) -- (1,0) (0,-1) -- (0,1); 
+            \draw (-1,-.7) -- (-.7,-.7) -- (.7,.7) -- (1,.7);
+        }
+  }
+}
+
+\tikzset{%
+    switch block/.style={%
+        minimum width = 3em,
+        minimum height = 3em,
+        draw, 
+        path picture={
+            % Get the width and height of the path picture node
+            \pgfpointdiff{\pgfpointanchor{path picture bounding box}{north east}}%
+            {\pgfpointanchor{path picture bounding box}{south west}}
+            \pgfgetlastxy\x\y
+            % Scale the x and y vectors so that the range
+            % -1 to 1 is slightly shorter than the size of the node
+            \tikzset{x=\x*-.4, y=\y*-.4}
+            %
+            % Draw annotation
+            % \draw (-1,0) -- (1,0) (0,-1) -- (0,1); 
+            \draw (-1, -.7) -- (-.3, -.7);
+            \draw (-1, 0.7) -- (-0.3, 0.7);
+            \draw (0.3, 0) -- (1, 0);
+            \draw [black,fill=black] (0.3, 0) circle (0.3ex);
+            \draw [black,fill=black] (-0.3, 0.7) circle (0.3ex);
+            \draw [black,fill=black] (-0.3, -0.7) circle (0.3ex);
+            \draw (-0.3, 0.7) -- (0.3, 0);
+        }
+  }
+}
+
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+        % We start by placing the blocks
+        \node [input, name=truth] {};
+        \node [branch, right of=truth] (gpsirsbranch) {};
+
+        \node [block, right of=gpsirsbranch] (gpsblock) {GPS};
+        \node [block, below of=gpsblock] (irsblock) {IRS};
+
+        \node [block, right of=gpsblock, node distance=3cm] (cafeblock) {CAFE};
+        
+        \node [output, right of=cafeblock] (output) {};
+
+        % draw the signals
+        \draw [draw, ->] (truth) -- node {Truth Trajectory} (gpsirsbranch) -- (gpsblock.west);
+        \draw [draw, ->] (gpsirsbranch) |- (irsblock.west);
+
+        \draw [draw, ->] (gpsblock.east) -- (cafeblock.west);
+        \draw [draw, ->] (irsblock.east) -| (cafeblock.south);
+
+        \draw [draw, ->] (cafeblock) -- node[pos=0.99] {Output} (output);
+    \end{tikzpicture}
+
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+
+        % We start by placing the blocks
+        \node [input, name=truth] {};
+        \node [branch, right of=truth] (gpsirsbranch) {};
+        
+        \node [block, right of=gpsirsbranch] (irsblock) {IRS};
+        \node [block, below of=irsblock] (gpsblock) {GPS};
+        \node [block, below of=gpsblock] (perturbblock) {Perturbation};
+        \node [block, right of=perturbblock, node distance=3cm] (spoofblock) {GPS Spoof};
+        \node [coordinate, right of=spoofblock, node distance=3cm] (spoofoutput) {};
+
+        
+        \node [switch block, above of=spoofblock] (switchblock) {};
+        \node [block, right of=switchblock, node distance=3cm] (cafeblock) {CAFE};
+
+        \node [output, right of=cafeblock] (output) {};
+
+        % draw the signals
+        \draw [draw, ->] (truth) -- node {Truth Trajectory} (gpsirsbranch) -- (irsblock.west);
+        \draw [draw, ->] (gpsirsbranch) |- (gpsblock);
+        \draw [draw, ->] (gpsirsbranch) |- (perturbblock);
+    
+        \draw [draw, ->] (perturbblock) -- (spoofblock);
+
+        \draw [draw, ->] (irsblock) -| (cafeblock);
+        \draw [draw,->] (spoofblock) -- (switchblock);
+        \draw [draw,->] (gpsblock) -- (switchblock);
+        \draw [draw,->] (switchblock) -- (cafeblock);
+
+        % \draw [draw, ->] (gpsirsbranch) |- (irsblock.west);
+
+        % \draw [draw, ->] (gpsblock.east) -- (cafeblock.west);
+        % \draw [draw, ->] (irsblock.east) -| (cafeblock.south);
+
+        \draw [draw, ->] (cafeblock) -- node[pos=0.99] {Output} (output);
+    \end{tikzpicture}
+
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+
+        % We start by placing the blocks
+        \node [input, name=truth] {};
+        \node [branch, right of=truth] (gpsirsbranch) {};
+        
+        \node [block, right of=gpsirsbranch] (irsblock) {IRS};
+        \node [block, below of=irsblock] (gpsblock) {GPS};
+        \node [block, below of=gpsblock] (perturbblock) {Perturbation};
+        \node [block, right of=perturbblock, node distance=3cm] (spoofblock) {GPS Spoof};
+        \node [coordinate, right of=spoofblock, node distance=3cm] (spoofoutput) {};
+        
+        
+        \node [switch block, above of=spoofblock] (switchblock) {};
+        \node [block, right of=switchblock, node distance=3cm] (cafeblock) {CAFE};
+
+        \node [block, right of=cafeblock, node distance=3cm] (plantblock) {A/C Plant};
+        \node [block, below of=plantblock] (sensorblock) {Sensors};
+        
+        \node [block, below of=spoofblock] (trackingblock) {Target Tracking};
+
+        % draw the signals
+        \draw [draw,->] (truth) -- (gpsirsbranch) -- (irsblock);
+        \draw [draw,->] (gpsirsbranch) |- (gpsblock);
+        \draw [draw,->] (gpsblock) -- (switchblock);
+        \draw [draw,->] (switchblock) -- (cafeblock);
+        \draw [draw,->] (irsblock) -| (cafeblock);
+        \draw [draw,->] (cafeblock) -- (plantblock);
+        \draw [draw,->] (plantblock) -- (sensorblock);
+
+        % draw multiple sensor lines
+        \draw [draw, ->] (sensorblock.south west) |- node[near end] {Sat Phone} (trackingblock.north east);
+        \draw [draw, ->] (sensorblock.south) |- node[near end] {ADS-B} (trackingblock.east);
+        \draw [draw, ->] (sensorblock.south east) |- node[near end] {Radar} (trackingblock.south east);
+
+        \draw [draw,->] (trackingblock) -| (perturbblock);
+        \draw [draw,->] (perturbblock) -- (spoofblock);
+        \draw [draw,->] (spoofblock) -- (switchblock);
+
+        \draw [draw,->] ($ (trackingblock) + (0,-2) $) -- (trackingblock) node[near start] {Flight Plan};
+    \end{tikzpicture}
+
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+        % We start by placing the blocks
+        \node [input, name=truth] {};
+        \node [branch, right of=truth] (gpsirsbranch) {};
+        
+        \node [block, right of=gpsirsbranch] (irsblock) {IRS};
+        \node [block, below of=irsblock] (gpsblock) {GPS};
+        \node [block, below of=gpsblock] (perturbblock) {Perturbation};
+        \node [block, right of=perturbblock, node distance=3cm] (spoofblock) {GPS Spoof};
+        \node [coordinate, right of=spoofblock, node distance=3cm] (spoofoutput) {};
+        
+        
+        \node [switch block, above of=spoofblock] (switchblock) {};
+        \node [block, right of=switchblock, node distance=3cm] (cafeblock) {CAFE};
+
+        \node [block, right of=cafeblock, node distance=3cm, pin={[pinstyle]above:Desired Trajectory}] (controlblock) {Control};
+        \node [block, below of=controlblock] (plantblock) {A/C Plant};
+        \node [block, below of=plantblock] (sensorblock) {Sensors};
+        
+        \node [block, below of=spoofblock] (trackingblock) {Target Tracking};
+        
+        % draw the signals
+        \draw [draw,->] (truth) -- (gpsirsbranch) -- (irsblock);
+        \draw [draw,->] (gpsirsbranch) |- (gpsblock);
+        \draw [draw,->] (gpsblock) -- (switchblock);
+        \draw [draw,->] (switchblock) -- (cafeblock);
+        \draw [draw,->] (irsblock) -| (cafeblock);
+        \draw [draw,->] (cafeblock) -- (controlblock);
+        \draw [draw,->] (plantblock) -- (sensorblock);
+
+        % draw multiple sensor lines
+        \draw [draw, ->] (sensorblock.north west) |- node[near end] {Sat Phone} (trackingblock.north east);
+        \draw [draw, ->] (sensorblock.west) |- node[near end] {ADS-B} (trackingblock.east);
+        \draw [draw, ->] (sensorblock.south west) |- node[near end] {Radar} (trackingblock.south east);
+
+        \draw [draw,->] (trackingblock) -| (perturbblock);
+        \draw [draw,->] (perturbblock) -- (spoofblock);
+        \draw [draw,->] (spoofblock) -- (switchblock);
+
+        \draw [draw,->] ($ (trackingblock) + (0,-2) $) -- (trackingblock) node[near start] {Flight Plan};
+
+        \draw [draw,-] (plantblock.east) -- ++(1,0) -- ++(0,5) -| (truth.north);
+
+        \draw [draw,->] (controlblock) -- (plantblock);
+    \end{tikzpicture}
+
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+        % We start by placing the blocks
+        \node [input, name=truth] {};
+        \node [branch, left of=truth] (stateestnode) {};
+
+        \node [branch, right of=truth] (branch) {};
+
+        \node [coordinate,below of=branch] (spoofnode) {};
+        \node [coordinate,below of=spoofnode] (irsnode) {};
+
+        \node [block, right of=branch] (GPS) {GPS};
+        \node [block, below of=GPS] (Spoof) {Spoof};
+        \node [block, below of=Spoof] (IRS) {IRS};
+
+        \node [block, right of=Spoof, node distance=3cm] (CAFE) {CAFE};
+        \node [coordinate,above of=CAFE] (cafenode) {};
+        \node [coordinate, below of=CAFE] (irsoutputnode) {};
+        \node [coordinate, right of=CAFE] (cafeoutputnode) {};
+
+        \node [block, below of=IRS] (AP) {AP};
+        \node [coordinate, below of=irsoutputnode] (apinputnode) {};
+        \node [coordinate, right of=apinputnode] (apinputnode2) {};
+
+        \node [block, left of=AP, node distance=3cm] (Plant) {A/C Plant};
+
+        \node [block, left of=Plant, node distance=3cm] (Track) {Target Tracking};
+
+        \draw [draw, ->] (stateestnode) -- node {State} (branch) -- (GPS);
+        \draw [draw, ->] (branch) -- (spoofnode) -- (Spoof);
+        \draw [draw, ->] (spoofnode) -- (irsnode) -- (IRS);
+
+        \draw [draw,->] (GPS.east) -- (cafenode) -- (CAFE.north);
+        \draw [draw,->, dashed] (Spoof) -- (CAFE.west);
+        \draw [draw,->] (IRS.east) -- (irsoutputnode) -- (CAFE.south);
+
+        \draw [draw,->] (CAFE.east) -- (cafeoutputnode) -- (apinputnode2) -- (AP.east);
+
+        \draw [draw,->] (AP.west) -- (Plant.east);
+        \draw [draw,->] (Plant.west) -- (Track.east); 
+        \draw [draw,->,dashed] (Track.north) -- node[label={[rotate=90]State Estimate}] {}  (stateestnode);
+        % We draw an edge between the controller and system block to 
+        % calculate the coordinate u. We need it to place the measurement block. 
+        % \draw [->] (controller) -- node[name=u] {$u$} (system);
+        % \node [output, right of=system] (output) {};
+        % \node [block, below of=u] (measurements) {Measurements};
+
+        % % Once the nodes are placed, connecting them is easy. 
+        % \draw [draw,->] (input) -- node {$r$} (sum);
+        % \draw [->] (sum) -- node {$e$} (controller);
+        % \draw [->] (system) -- node [name=y] {$y$}(output);
+        % \draw [->] (y) |- (measurements);
+        % \draw [->] (measurements) -| node[pos=0.99] {$-$} 
+        %     node [near end] {$y_m$} (sum);
+    \end{tikzpicture}
+
+
+\end{document}
